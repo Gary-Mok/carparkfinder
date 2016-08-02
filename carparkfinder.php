@@ -20,6 +20,9 @@ if(!$result = $db->query($sql)){
     die('There was an error running the query [' . $db->error . ']');
 }
 
+echo 'Location: ' . $_POST["location"] . '<br />';
+echo 'Postcode: ' . $_POST["postcode"] . '<br /><br />';
+
 while($row = $result->fetch_assoc()){
     echo 'Name: ' . $row['Name'] . '<br />';
     echo 'Vacancies: ' . $row['Vacancies'] . '<br />';
