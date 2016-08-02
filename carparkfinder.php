@@ -4,6 +4,10 @@
     <style>
         .error {color: #FF0000;}
     </style>
+
+    <title>
+        Car Park Finder
+    </title>
 </head>
 
 <body>
@@ -77,7 +81,7 @@ if (empty($_POST["location"])) {
 
 else {
 
-    $sql = "SELECT * FROM car_parks WHERE Location LIKE '" . $_POST["location"] . "'";
+    $sql = "SELECT * FROM car_parks WHERE Location LIKE '%" . $_POST["location"] . "%'";
 
     if (!$result = $db->query($sql)) {
         die('There was an error running the query [' . $db->error . ']');
