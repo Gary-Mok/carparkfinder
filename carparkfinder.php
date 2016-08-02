@@ -27,7 +27,7 @@ while($row = $result->fetch_assoc()){
     echo 'Name: ' . $row['Name'] . '<br />';
     echo 'Vacancies: ' . $row['Vacancies'] . '<br />';
     echo 'Location: ' . $row['Location'] . '<br />';
-    echo 'Postcode: ' . $row['Postcode'] . '<br />';
+    echo 'Postcode: ' . $row['Postcode'] . '<br /><br />';
 }
 
 ?>

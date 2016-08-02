@@ -4,6 +4,8 @@
 
 <div>
 
+    <h1>Car Park Finder</h1>
+
     <?php
 
     echo 'Input location or postcode.';
