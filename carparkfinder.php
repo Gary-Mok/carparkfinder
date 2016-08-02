@@ -1,3 +1,7 @@
+<html>
+
+<body>
+
 <p>
 
 <?php
@@ -9,7 +13,7 @@ if($db->connect_errno > 0){
 }
 
 $sql = <<<SQL
-SELECT * FROM car_parks WHERE id = 1
+SELECT * FROM car_parks WHERE Postcode LIKE 'WD%'
 SQL;
 
 if(!$result = $db->query($sql)){
@@ -18,10 +22,15 @@ if(!$result = $db->query($sql)){
 
 while($row = $result->fetch_assoc()){
     echo 'Name: ' . $row['Name'] . '<br />';
-    echo 'Owner: ' . $row['Owner'] . '<br />';
     echo 'Vacancies: ' . $row['Vacancies'] . '<br />';
+    echo 'Location: ' . $row['Location'] . '<br />';
+    echo 'Postcode: ' . $row['Postcode'] . '<br />';
 }
 
 ?>
 
 </p>
+
+</body>
+
+</html>
