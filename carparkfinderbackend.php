@@ -340,6 +340,12 @@ function update_input($data) {
             }
         }
 
+        if ($db->query($sql) === TRUE) {
+            echo "Record updated successfully";
+        } else {
+            echo "Error: " . $sql . "<br>" . $db->error;
+        }
+
     }
 
     ?>
