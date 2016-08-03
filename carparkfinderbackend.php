@@ -25,36 +25,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (empty($_POST["name"])) {
             $nameErr = "Name is required";
         } else {
-            $name = test_input($_POST["name"]);
+            $name = create_input($_POST["name"]);
         }
 
         if (empty($_POST["owner"])) {
             $ownerErr = "Owner name is required";
         } else {
-            $owner = test_input($_POST["owner"]);
+            $owner = create_input($_POST["owner"]);
         }
 
         if (empty($_POST["location"])) {
             $locationErr = "Location is required";
         } else {
-            $location = test_input($_POST["location"]);
+            $location = create_input($_POST["location"]);
         }
 
         if (empty($_POST["postcode"])) {
             $postcodeErr = "Postcode is required";
         } else {
-            $postcode = test_input($_POST["postcode"]);
+            $postcode = create_input($_POST["postcode"]);
         }
 
         if (empty($_POST["vacancies"])) {
             $vacanciesErr = "No. of vacancies is required";
         } else {
-            $vacancies = test_input($_POST["vacancies"]);
+            $vacancies = create_input($_POST["vacancies"]);
         }
     }
 }
 
-function test_input($data) {
+function create_input($data) {
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
@@ -65,7 +65,7 @@ function test_input($data) {
 
 <div>
 
-    <h2>Create new data.</h2>
+    <h1>Create new data.</h1>
 
 <?php
 
@@ -151,7 +151,7 @@ echo 'Enter data for the following fields:';
 
 <div>
 
-    <h2>View database.</h2>
+    <h1>View database.</h1>
 
     <?php
 
@@ -169,17 +169,11 @@ echo 'Enter data for the following fields:';
 
     <?php
 
-    $db = new mysqli('localhost', 'root', 'root', 'CARPARKFINDER');
-
-    if($db->connect_errno > 0){
-        die('Unable to connect to database [' . $db->connect_error . ']');
-    }
-
     if (isset($_POST['read'])) {
 
-        $sql2 = "SELECT * FROM car_parks";
+        $sql = "SELECT * FROM car_parks";
 
-        if (!$result = $db->query($sql2)) {
+        if (!$result = $db->query($sql)) {
             die('There was an error running the query [' . $db->error . ']');
         }
 
@@ -201,7 +195,156 @@ echo 'Enter data for the following fields:';
 
 <?php
 
+$idErr = "";
+
+$id = $updatename = $updateowner = $updatelocation = $updatepostcode = $updatevacancies = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    if (isset($_POST['update'])) {
+
+        if (empty($_POST["id"])) {
+            $idErr = "Car park ID number is required";
+        } else {
+            $id = update_input($_POST["id"]);
+        }
+
+        if (empty($_POST["updatename"])) {
+        } else {
+            $updatename = update_input($_POST["updatename"]);
+        }
+
+        if (empty($_POST["updateowner"])) {
+        } else {
+            $updateowner = update_input($_POST["updateowner"]);
+        }
+
+        if (empty($_POST["updatelocation"])) {
+        } else {
+            $updatelocation = update_input($_POST["updatelocation"]);
+        }
+
+        if (empty($_POST["updatepostcode"])) {
+        } else {
+            $updatepostcode = update_input($_POST["updatepostcode"]);
+        }
+
+        if (empty($_POST["updatevacancies"])) {
+        } else {
+            $updatevacancies = update_input($_POST["updatevacancies"]);
+        }
+    }
+}
+
+function update_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
 ?>
+
+<div>
+
+    <h1>Update database.</h1>
+
+    <?php
+
+    echo 'Update data in database:';
+
+    ?>
+
+</div>
+
+<div>
+
+    <p><span class="error">* required field.</span></p>
+
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+        ID: <input type="text" name="id">
+        <span class="error">* <?php echo $idErr;?></span>
+        <br><br>
+        Name: <input type="text" name="updatename">
+        <br><br>
+        Owner: <input type="text" name="updateowner">
+        <br><br>
+        Location: <input type="text" name="updatelocation">
+        <br><br>
+        Postcode: <input type="text" name="updatepostcode">
+        <br><br>
+        Vacancies: <input type="text" name="updatevacancies">
+        <br><br>
+        <input type="submit" name="update" value="Update">
+    </form>
+
+    <?php
+
+    if (empty($_POST["id"])) {
+    }
+
+    else {
+
+        if (empty($_POST["updatename"])) {
+        }
+        else {
+            $sql = "UPDATE car_parks SET Name='" . $updatename . "' WHERE ID=" . $id . "";
+
+            if ($db->query($sql) === TRUE) {
+            } else {
+                echo "Error: " . $sql . "<br>" . $db->error;
+            }
+        }
+
+        if (empty($_POST["updateowner"])) {
+        }
+        else {
+            $sql = "UPDATE car_parks SET Owner='" . $updateowner . "' WHERE ID=" . $id . "";
+
+            if ($db->query($sql) === TRUE) {
+            } else {
+                echo "Error: " . $sql . "<br>" . $db->error;
+            }
+        }
+
+        if (empty($_POST["updatelocation"])) {
+        }
+        else {
+            $sql = "UPDATE car_parks SET Name='" . $updatelocation . "' WHERE ID=" . $id . "";
+
+            if ($db->query($sql) === TRUE) {
+            } else {
+                echo "Error: " . $sql . "<br>" . $db->error;
+            }
+        }
+
+        if (empty($_POST["updatepostcode"])) {
+        }
+        else {
+            $sql = "UPDATE car_parks SET Name='" . $updatepostcode . "' WHERE ID=" . $id . "";
+
+            if ($db->query($sql) === TRUE) {
+            } else {
+                echo "Error: " . $sql . "<br>" . $db->error;
+            }
+        }
+
+        if (empty($_POST["updatevacancies"])) {
+        }
+        else {
+            $sql = "UPDATE car_parks SET Name='" . $updatevacancies . "' WHERE ID=" . $id . "";
+
+            if ($db->query($sql) === TRUE) {
+            } else {
+                echo "Error: " . $sql . "<br>" . $db->error;
+            }
+        }
+
+    }
+
+    ?>
+
+</div>
 
 </body>
 
