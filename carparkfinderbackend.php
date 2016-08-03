@@ -310,7 +310,7 @@ function update_input($data) {
         if (empty($_POST["updatelocation"])) {
         }
         else {
-            $sql = "UPDATE car_parks SET Name='" . $updatelocation . "' WHERE ID=" . $id . "";
+            $sql = "UPDATE car_parks SET Location='" . $updatelocation . "' WHERE ID=" . $id . "";
 
             if ($db->query($sql) === TRUE) {
             } else {
@@ -321,7 +321,7 @@ function update_input($data) {
         if (empty($_POST["updatepostcode"])) {
         }
         else {
-            $sql = "UPDATE car_parks SET Name='" . $updatepostcode . "' WHERE ID=" . $id . "";
+            $sql = "UPDATE car_parks SET Postcode='" . $updatepostcode . "' WHERE ID=" . $id . "";
 
             if ($db->query($sql) === TRUE) {
             } else {
@@ -332,7 +332,7 @@ function update_input($data) {
         if (empty($_POST["updatevacancies"])) {
         }
         else {
-            $sql = "UPDATE car_parks SET Name='" . $updatevacancies . "' WHERE ID=" . $id . "";
+            $sql = "UPDATE car_parks SET Vacancies='" . $updatevacancies . "' WHERE ID=" . $id . "";
 
             if ($db->query($sql) === TRUE) {
             } else {
