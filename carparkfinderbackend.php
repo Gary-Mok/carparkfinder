@@ -203,10 +203,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST['update'])) {
 
-        if (empty($_POST["id"])) {
+        if (empty($_POST["id_update"])) {
             $idErr = "Car park ID number is required";
         } else {
-            $id = update_input($_POST["id"]);
+            $id = update_input($_POST["id_update"]);
         }
 
         if (empty($_POST["updatename"])) {
@@ -262,7 +262,7 @@ function update_input($data) {
     <p><span class="error">* required field.</span></p>
 
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-        ID: <input type="text" name="id">
+        ID: <input type="text" name="id_update">
         <span class="error">* <?php echo $idErr;?></span>
         <br><br>
         Name: <input type="text" name="updatename">
@@ -280,7 +280,7 @@ function update_input($data) {
 
     <?php
 
-    if (empty($_POST["id"])) {
+    if (empty($_POST["id_update"])) {
     }
 
     else {
@@ -347,6 +347,84 @@ function update_input($data) {
         }
 
     }
+
+    ?>
+
+</div>
+
+<?php
+
+$idErr = "";
+
+$id = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    if (isset($_POST['delete'])) {
+
+        if (empty($_POST["id_delete"])) {
+            $idErr = "Car park ID number is required";
+        } else {
+            $id = delete_input($_POST["id_delete"]);
+        }
+    }
+}
+
+function delete_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
+?>
+
+<div>
+
+    <h1>Delete data from database.</h1>
+
+    <?php
+
+    echo 'Input ID of car park you want to delete from database:' . '<br />';
+
+    echo 'WARNING: Ensure that the record you want to delete is the correct one. Deleted data cannot be recovered.';
+
+    ?>
+
+</div>
+
+<div>
+
+    <p><span class="error">* required field.</span></p>
+
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+        ID: <input type="text" name="id_delete">
+        <span class="error">* <?php echo $idErr;?></span>
+        <br><br>
+        <input type="submit" name="delete" value="Delete">
+    </form>
+
+    <?php
+
+    if (empty($_POST["id_delete"])) {
+    }
+
+    else {
+        $sql = "DELETE FROM car_parks WHERE ID=" . $id . "";
+
+        if ($db->query($sql) === TRUE) {
+        } else {
+            echo "Error: " . $sql . "<br>" . $db->error;
+        }
+
+        if ($db->query($sql) === TRUE) {
+            echo "Record deleted successfully";
+        } else {
+            echo "Error: " . $sql . "<br>" . $db->error;
+        }
+    }
+
+
 
     ?>
 
