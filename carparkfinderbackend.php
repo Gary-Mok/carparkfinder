@@ -4,6 +4,10 @@
     <style>
         .error {color: #FF0000;}
     </style>
+
+    <title>
+        Car Park Finder Backend Forms
+    </title>
 </head>
 
 <body>
@@ -16,34 +20,37 @@ $name = $owner = $location = $postcode = $vacancies = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    if (empty($_POST["name"])) {
-        $nameErr = "Name is required";
-    } else {
-        $name = test_input($_POST["name"]);
-    }
+    if (isset($_POST['create'])) {
 
-    if (empty($_POST["owner"])) {
-        $ownerErr = "Owner name is required";
-    } else {
-        $owner = test_input($_POST["owner"]);
-    }
+        if (empty($_POST["name"])) {
+            $nameErr = "Name is required";
+        } else {
+            $name = test_input($_POST["name"]);
+        }
 
-    if (empty($_POST["location"])) {
-        $locationErr = "Location is required";
-    } else {
-        $location = test_input($_POST["location"]);
-    }
+        if (empty($_POST["owner"])) {
+            $ownerErr = "Owner name is required";
+        } else {
+            $owner = test_input($_POST["owner"]);
+        }
 
-    if (empty($_POST["postcode"])) {
-        $postcodeErr = "Postcode is required";
-    } else {
-        $postcode = test_input($_POST["postcode"]);
-    }
+        if (empty($_POST["location"])) {
+            $locationErr = "Location is required";
+        } else {
+            $location = test_input($_POST["location"]);
+        }
 
-    if (empty($_POST["vacancies"])) {
-        $vacanciesErr = "No. of vacancies is required";
-    } else {
-        $vacancies = test_input($_POST["vacancies"]);
+        if (empty($_POST["postcode"])) {
+            $postcodeErr = "Postcode is required";
+        } else {
+            $postcode = test_input($_POST["postcode"]);
+        }
+
+        if (empty($_POST["vacancies"])) {
+            $vacanciesErr = "No. of vacancies is required";
+        } else {
+            $vacancies = test_input($_POST["vacancies"]);
+        }
     }
 }
 
@@ -55,8 +62,6 @@ function test_input($data) {
 }
 
 ?>
-
-<p>
 
 <div>
 
@@ -90,7 +95,7 @@ echo 'Enter data for the following fields:';
         Vacancies: <input type="text" name="vacancies">
         <span class="error">* <?php echo $vacanciesErr;?></span>
         <br><br>
-        <input type="submit" name="submit" value="Submit">
+        <input type="submit" name="create" value="Submit">
     </form>
 
     <?php
@@ -114,23 +119,18 @@ echo 'Enter data for the following fields:';
     echo "<br>";
 
     if (empty($_POST["name"])) {
-        return;
     }
 
     elseif (empty($_POST["owner"])) {
-        return;
     }
 
     elseif (empty($_POST["location"])) {
-        return;
     }
 
     elseif (empty($_POST["postcode"])) {
-        return;
     }
 
     elseif (empty($_POST["vacancies"])) {
-        return;
     }
 
     else {
@@ -149,7 +149,59 @@ echo 'Enter data for the following fields:';
 
 </div>
 
-</p>
+<div>
+
+    <h2>View database.</h2>
+
+    <?php
+
+    echo 'Click to view current database:';
+
+    ?>
+
+</div>
+
+<div>
+
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+        <input type="submit" name="read" value="View database">
+    </form>
+
+    <?php
+
+    $db = new mysqli('localhost', 'root', 'root', 'CARPARKFINDER');
+
+    if($db->connect_errno > 0){
+        die('Unable to connect to database [' . $db->connect_error . ']');
+    }
+
+    if (isset($_POST['read'])) {
+
+        $sql2 = "SELECT * FROM car_parks";
+
+        if (!$result = $db->query($sql2)) {
+            die('There was an error running the query [' . $db->error . ']');
+        }
+
+        while ($row = $result->fetch_assoc()) {
+            echo 'ID No.: ' . $row['ID'] . '<br />';
+            echo 'Name: ' . $row['Name'] . '<br />';
+            echo 'Owner: ' . $row['Owner'] . '<br />';
+            echo 'Location: ' . $row['Location'] . '<br />';
+            echo 'Postcode: ' . $row['Postcode'] . '<br />';
+            echo 'Vacancies: ' . $row['Vacancies'] . '<br /><br />';
+        }
+
+    }
+
+
+    ?>
+
+</div>
+
+<?php
+
+?>
 
 </body>
 
