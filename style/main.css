@@ -1,0 +1,15 @@
+body {
+    background-color: #FFFFFF;
+}
+
+table, th, td {
+    border: 1px solid #000000;
+}
+
+.location {
+    background-color: #CCCCCC;
+}
+
+.postcode {
+    background-color: #FFFFFF;
+}
