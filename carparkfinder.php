@@ -121,12 +121,6 @@ else {
 
     <?php
 
-    $db = new mysqli('localhost', 'root', 'root', 'CARPARKFINDER');
-
-    if($db->connect_errno > 0){
-        die('Unable to connect to database [' . $db->connect_error . ']');
-    }
-
     if (empty($_POST["postcode"])) {
     }
 
@@ -143,9 +137,9 @@ else {
 
         while ($row = $result->fetch_assoc()) {
             echo 'Name: ' . $row['Name'] . '<br />';
-            echo 'Vacancies: ' . $row['Vacancies'] . '<br />';
             echo 'Location: ' . $row['Location'] . '<br />';
-            echo 'Postcode: ' . $row['Postcode'] . '<br /><br />';
+            echo 'Postcode: ' . $row['Postcode'] . '<br />';
+            echo 'Vacancies: ' . $row['Vacancies'] . '<br /><br />';
         }
 
     }

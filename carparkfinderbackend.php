@@ -4,6 +4,10 @@
     <style>
         .error {color: #FF0000;}
     </style>
+
+    <title>
+        Car Park Finder Backend Forms
+    </title>
 </head>
 
 <body>
@@ -16,38 +20,41 @@ $name = $owner = $location = $postcode = $vacancies = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    if (empty($_POST["name"])) {
-        $nameErr = "Name is required";
-    } else {
-        $name = test_input($_POST["name"]);
-    }
+    if (isset($_POST['create'])) {
 
-    if (empty($_POST["owner"])) {
-        $ownerErr = "Owner name is required";
-    } else {
-        $owner = test_input($_POST["owner"]);
-    }
+        if (empty($_POST["name"])) {
+            $nameErr = "Name is required";
+        } else {
+            $name = create_input($_POST["name"]);
+        }
 
-    if (empty($_POST["location"])) {
-        $locationErr = "Location is required";
-    } else {
-        $location = test_input($_POST["location"]);
-    }
+        if (empty($_POST["owner"])) {
+            $ownerErr = "Owner name is required";
+        } else {
+            $owner = create_input($_POST["owner"]);
+        }
 
-    if (empty($_POST["postcode"])) {
-        $postcodeErr = "Postcode is required";
-    } else {
-        $postcode = test_input($_POST["postcode"]);
-    }
+        if (empty($_POST["location"])) {
+            $locationErr = "Location is required";
+        } else {
+            $location = create_input($_POST["location"]);
+        }
 
-    if (empty($_POST["vacancies"])) {
-        $vacanciesErr = "No. of vacancies is required";
-    } else {
-        $vacancies = test_input($_POST["vacancies"]);
+        if (empty($_POST["postcode"])) {
+            $postcodeErr = "Postcode is required";
+        } else {
+            $postcode = create_input($_POST["postcode"]);
+        }
+
+        if (empty($_POST["vacancies"])) {
+            $vacanciesErr = "No. of vacancies is required";
+        } else {
+            $vacancies = create_input($_POST["vacancies"]);
+        }
     }
 }
 
-function test_input($data) {
+function create_input($data) {
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
@@ -56,11 +63,9 @@ function test_input($data) {
 
 ?>
 
-<p>
-
 <div>
 
-    <h2>Create new data.</h2>
+    <h1>Create new data.</h1>
 
 <?php
 
@@ -90,7 +95,7 @@ echo 'Enter data for the following fields:';
         Vacancies: <input type="text" name="vacancies">
         <span class="error">* <?php echo $vacanciesErr;?></span>
         <br><br>
-        <input type="submit" name="submit" value="Submit">
+        <input type="submit" name="create" value="Submit">
     </form>
 
     <?php
@@ -114,23 +119,18 @@ echo 'Enter data for the following fields:';
     echo "<br>";
 
     if (empty($_POST["name"])) {
-        return;
     }
 
     elseif (empty($_POST["owner"])) {
-        return;
     }
 
     elseif (empty($_POST["location"])) {
-        return;
     }
 
     elseif (empty($_POST["postcode"])) {
-        return;
     }
 
     elseif (empty($_POST["vacancies"])) {
-        return;
     }
 
     else {
@@ -149,7 +149,286 @@ echo 'Enter data for the following fields:';
 
 </div>
 
-</p>
+<div>
+
+    <h1>View database.</h1>
+
+    <?php
+
+    echo 'Click to view current database:';
+
+    ?>
+
+</div>
+
+<div>
+
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+        <input type="submit" name="read" value="View database">
+    </form>
+
+    <?php
+
+    if (isset($_POST['read'])) {
+
+        $sql = "SELECT * FROM car_parks";
+
+        if (!$result = $db->query($sql)) {
+            die('There was an error running the query [' . $db->error . ']');
+        }
+
+        while ($row = $result->fetch_assoc()) {
+            echo 'ID No.: ' . $row['ID'] . '<br />';
+            echo 'Name: ' . $row['Name'] . '<br />';
+            echo 'Owner: ' . $row['Owner'] . '<br />';
+            echo 'Location: ' . $row['Location'] . '<br />';
+            echo 'Postcode: ' . $row['Postcode'] . '<br />';
+            echo 'Vacancies: ' . $row['Vacancies'] . '<br /><br />';
+        }
+
+    }
+
+
+    ?>
+
+</div>
+
+<?php
+
+$idErr = "";
+
+$id = $updatename = $updateowner = $updatelocation = $updatepostcode = $updatevacancies = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    if (isset($_POST['update'])) {
+
+        if (empty($_POST["id_update"])) {
+            $idErr = "Car park ID number is required";
+        } else {
+            $id = update_input($_POST["id_update"]);
+        }
+
+        if (empty($_POST["updatename"])) {
+        } else {
+            $updatename = update_input($_POST["updatename"]);
+        }
+
+        if (empty($_POST["updateowner"])) {
+        } else {
+            $updateowner = update_input($_POST["updateowner"]);
+        }
+
+        if (empty($_POST["updatelocation"])) {
+        } else {
+            $updatelocation = update_input($_POST["updatelocation"]);
+        }
+
+        if (empty($_POST["updatepostcode"])) {
+        } else {
+            $updatepostcode = update_input($_POST["updatepostcode"]);
+        }
+
+        if (empty($_POST["updatevacancies"])) {
+        } else {
+            $updatevacancies = update_input($_POST["updatevacancies"]);
+        }
+    }
+}
+
+function update_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
+?>
+
+<div>
+
+    <h1>Update database.</h1>
+
+    <?php
+
+    echo 'Update data in database:';
+
+    ?>
+
+</div>
+
+<div>
+
+    <p><span class="error">* required field.</span></p>
+
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+        ID: <input type="text" name="id_update">
+        <span class="error">* <?php echo $idErr;?></span>
+        <br><br>
+        Name: <input type="text" name="updatename">
+        <br><br>
+        Owner: <input type="text" name="updateowner">
+        <br><br>
+        Location: <input type="text" name="updatelocation">
+        <br><br>
+        Postcode: <input type="text" name="updatepostcode">
+        <br><br>
+        Vacancies: <input type="text" name="updatevacancies">
+        <br><br>
+        <input type="submit" name="update" value="Update">
+    </form>
+
+    <?php
+
+    if (empty($_POST["id_update"])) {
+    }
+
+    else {
+
+        if (empty($_POST["updatename"])) {
+        }
+        else {
+            $sql = "UPDATE car_parks SET Name='" . $updatename . "' WHERE ID=" . $id . "";
+
+            if ($db->query($sql) === TRUE) {
+            } else {
+                echo "Error: " . $sql . "<br>" . $db->error;
+            }
+        }
+
+        if (empty($_POST["updateowner"])) {
+        }
+        else {
+            $sql = "UPDATE car_parks SET Owner='" . $updateowner . "' WHERE ID=" . $id . "";
+
+            if ($db->query($sql) === TRUE) {
+            } else {
+                echo "Error: " . $sql . "<br>" . $db->error;
+            }
+        }
+
+        if (empty($_POST["updatelocation"])) {
+        }
+        else {
+            $sql = "UPDATE car_parks SET Location='" . $updatelocation . "' WHERE ID=" . $id . "";
+
+            if ($db->query($sql) === TRUE) {
+            } else {
+                echo "Error: " . $sql . "<br>" . $db->error;
+            }
+        }
+
+        if (empty($_POST["updatepostcode"])) {
+        }
+        else {
+            $sql = "UPDATE car_parks SET Postcode='" . $updatepostcode . "' WHERE ID=" . $id . "";
+
+            if ($db->query($sql) === TRUE) {
+            } else {
+                echo "Error: " . $sql . "<br>" . $db->error;
+            }
+        }
+
+        if (empty($_POST["updatevacancies"])) {
+        }
+        else {
+            $sql = "UPDATE car_parks SET Vacancies='" . $updatevacancies . "' WHERE ID=" . $id . "";
+
+            if ($db->query($sql) === TRUE) {
+            } else {
+                echo "Error: " . $sql . "<br>" . $db->error;
+            }
+        }
+
+        if ($db->query($sql) === TRUE) {
+            echo "Record updated successfully";
+        } else {
+            echo "Error: " . $sql . "<br>" . $db->error;
+        }
+
+    }
+
+    ?>
+
+</div>
+
+<?php
+
+$idErr = "";
+
+$id = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    if (isset($_POST['delete'])) {
+
+        if (empty($_POST["id_delete"])) {
+            $idErr = "Car park ID number is required";
+        } else {
+            $id = delete_input($_POST["id_delete"]);
+        }
+    }
+}
+
+function delete_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
+?>
+
+<div>
+
+    <h1>Delete data from database.</h1>
+
+    <?php
+
+    echo 'Input ID of car park you want to delete from database:' . '<br />';
+
+    echo 'WARNING: Ensure that the record you want to delete is the correct one. Deleted data cannot be recovered.';
+
+    ?>
+
+</div>
+
+<div>
+
+    <p><span class="error">* required field.</span></p>
+
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+        ID: <input type="text" name="id_delete">
+        <span class="error">* <?php echo $idErr;?></span>
+        <br><br>
+        <input type="submit" name="delete" value="Delete">
+    </form>
+
+    <?php
+
+    if (empty($_POST["id_delete"])) {
+    }
+
+    else {
+        $sql = "DELETE FROM car_parks WHERE ID=" . $id . "";
+
+        if ($db->query($sql) === TRUE) {
+        } else {
+            echo "Error: " . $sql . "<br>" . $db->error;
+        }
+
+        if ($db->query($sql) === TRUE) {
+            echo "Record deleted successfully";
+        } else {
+            echo "Error: " . $sql . "<br>" . $db->error;
+        }
+    }
+
+
+
+    ?>
+
+</div>
 
 </body>
 
