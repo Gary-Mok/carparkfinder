@@ -6,6 +6,10 @@ h1 {
     font-family: Arial;
 }
 
+h2 {
+    font-family: Arial;
+}
+
 span {
     color: #FF0000;
 }
@@ -15,15 +19,15 @@ table, th, td {
 }
 
 .create {
-    background-color: #CCCCCC;
+    background-color: #FFFFFF;
 }
 
 .read {
-    background-color: #DDDDDD;
+    background-color: #FFFFFF;
 }
 
 .update {
-    background-color: #EEEEEE;
+    background-color: #FFFFFF;
 }
 
 .delete {

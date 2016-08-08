@@ -14,7 +14,7 @@
 
 <?php
 
-include 'bootstrap.php'; //imports functions from functions.php
+include 'bootstrap.php'; //imports functions and database connection
 
 $location = $postcode = ''; //defines empty strings
 
@@ -112,5 +112,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['postcode']) && strlen(
     ?>
 
 </div>
+
+<div class="read">
+
+    <h1>View database.</h1>
+
+    <p>Click to view current database:</p>
+
+</div>
+
+<div class="read">
+
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
+        <input type="submit" name="read" value="View database"> <!--read submit-->
+    </form>
+
+    <?php
+
+    if (isset($_POST['read'])) { //following only occurs if user is reading records
+
+        $sql = 'SELECT * FROM car_parks';
+
+        if (!$result = $db->query($sql)) {
+            die('There was an error running the query [' . $db->error . ']'); //error message if query fails
+        }
+
+        echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
+
+        while ($row = $result->fetch_assoc()) {
+            echo '<tr><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td></tr>';
+            //database displayed in a table
+        }
+        echo '</table>';
+    }
+
+    ?>
+
+</div>
+
 </body>
+
 </html>

@@ -18,6 +18,11 @@ $elements = array(
         'isRequired' => false,
         'type' => 'text',
     ),
+    'owner' => array(
+        'description' => 'Owner Name',
+        'isRequired' => false,
+        'type' => 'text',
+    ),
     'location' => array(
         'description' => 'Location',
         'isRequired' => false,
