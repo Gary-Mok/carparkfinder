@@ -1,0 +1,31 @@
+body {
+    background-color: #FFFFFF;
+}
+
+h1 {
+    font-family: Arial;
+}
+
+span {
+    color: #FF0000;
+}
+
+table, th, td {
+    border: 1px solid #000000;
+}
+
+.create {
+    background-color: #CCCCCC;
+}
+
+.read {
+    background-color: #DDDDDD;
+}
+
+.update {
+    background-color: #EEEEEE;
+}
+
+.delete {
+    background-color: #FFFFFF;
+}

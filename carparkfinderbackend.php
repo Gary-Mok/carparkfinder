@@ -1,9 +1,9 @@
 <html>
 
 <head>
-    <style>
-        .error {color: #FF0000;}
-    </style>
+    <link type='text/css' rel='stylesheet' href='/style/backend.css' />
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <title>
         Car Park Finder Backend Forms
@@ -14,180 +14,119 @@
 
 <?php
 
-$nameErr = $ownerErr = $locationErr = $postcodeErr = $vacanciesErr = "";
+include 'bootstrap.php'; //imports functions from functions.php
 
-$name = $owner = $location = $postcode = $vacancies = "";
+$nameErr = $ownerErr = ''; //defines empty strings
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+$name = $owner = $location = $postcode = $vacancies = ''; //defines empty strings
 
-    if (isset($_POST['create'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
+    //following only occurs if user is creating a record
 
-        if (empty($_POST["name"])) {
-            $nameErr = "Name is required";
-        } else {
-            $name = create_input($_POST["name"]);
-        }
-
-        if (empty($_POST["owner"])) {
-            $ownerErr = "Owner name is required";
-        } else {
-            $owner = create_input($_POST["owner"]);
-        }
-
-        if (empty($_POST["location"])) {
-            $locationErr = "Location is required";
-        } else {
-            $location = create_input($_POST["location"]);
-        }
-
-        if (empty($_POST["postcode"])) {
-            $postcodeErr = "Postcode is required";
-        } else {
-            $postcode = create_input($_POST["postcode"]);
-        }
-
-        if (empty($_POST["vacancies"])) {
-            $vacanciesErr = "No. of vacancies is required";
-        } else {
-            $vacancies = create_input($_POST["vacancies"]);
-        }
+    if (strlen($_POST['name']) == 0) {
+        $nameErr = 'Name is required';
+    } else {
+        $name = input($_POST['name']); //if input is empty, display error message, else set $name to input
     }
-}
 
-function create_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
+    if (strlen($_POST['owner']) == 0) {
+        $ownerErr = 'Owner name is required';
+    } else {
+        $owner = input($_POST['owner']); //if input is empty, display error message, else set $owner to input
+    }
+
+    if (strlen($_POST['location']) !== 0) {
+        $location = input($_POST['location']); //set $location to input
+    }
+
+    if (strlen($_POST['postcode']) !== 0) {
+        $postcode = input($_POST['postcode']); //set $postcode to input
+    }
+
+    if (strlen($_POST['vacancies']) !== 0) {
+        $vacancies = input($_POST['vacancies']); //set $vacancies to input
+    }
 }
 
 ?>
 
-<div>
+<div class="create">
 
     <h1>Create new data.</h1>
 
-<?php
-
-echo 'Enter data for the following fields:';
-
-?>
+    <p>Enter data for the following fields:</p>
 
 </div>
 
-<div>
+<div class="create">
 
-    <p><span class="error">* required field.</span></p>
+    <p><span>* required field.</span></p>
 
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-        Name: <input type="text" name="name">
-        <span class="error">* <?php echo $nameErr;?></span>
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
+        <label for="name">Name:</label> <input type="text" name="name" id="name"> <!--name input-->
+        <span>* <?php echo $nameErr;?></span> <!--display error if empty-->
         <br><br>
-        Owner: <input type="text" name="owner">
-        <span class="error">* <?php echo $ownerErr;?></span>
+        <label for="owner">Owner:</label> <input type="text" name="owner" id="owner"> <!--owner input-->
+        <span>* <?php echo $ownerErr;?></span> <!--display error if empty-->
         <br><br>
-        Location: <input type="text" name="location">
-        <span class="error">* <?php echo $locationErr;?></span>
+        <label for="location">Location:</label> <input type="text" name="location" id="location"> <!--location input-->
         <br><br>
-        Postcode: <input type="text" name="postcode">
-        <span class="error">* <?php echo $postcodeErr;?></span>
+        <label for="postcode">Postcode:</label> <input type="text" name="postcode" id="postcode"> <!--postcode input-->
         <br><br>
-        Vacancies: <input type="text" name="vacancies">
-        <span class="error">* <?php echo $vacanciesErr;?></span>
+        <label for="vacancies">Vacancies:</label> <input type="text" name="vacancies" id="vacancies"> <!--vacancies input-->
         <br><br>
-        <input type="submit" name="create" value="Submit">
+        <input type="submit" name="create" value="Submit"> <!--create submit-->
     </form>
 
     <?php
 
-    $db = new mysqli('localhost', 'root', 'root', 'CARPARKFINDER');
+    if (isset($_POST['create']) and strlen($_POST['name']) !== 0 and strlen($_POST['owner']) !== 0) { //following only occurs if user is creating a record
 
-    if($db->connect_errno > 0){
-        die('Unable to connect to database [' . $db->connect_error . ']');
-    }
+        $sql = "INSERT INTO car_parks (name, owner, location, postcode, vacancies) VALUES ('" . $name . "', '" . $owner . "', '" . $location . "', '" . $postcode . "', '" . $vacancies . "')";
 
-    echo "<h2>Your Input:</h2>";
-    echo "Name: " . $name;
-    echo "<br>";
-    echo "Owner: " . $owner;
-    echo "<br>";
-    echo "Location: " . $location;
-    echo "<br>";
-    echo "Postcode: " . $postcode;
-    echo "<br>";
-    echo "Vacancies: " . $vacancies;
-    echo "<br>";
-
-    if (empty($_POST["name"])) {
-    }
-
-    elseif (empty($_POST["owner"])) {
-    }
-
-    elseif (empty($_POST["location"])) {
-    }
-
-    elseif (empty($_POST["postcode"])) {
-    }
-
-    elseif (empty($_POST["vacancies"])) {
-    }
-
-    else {
-
-        $sql = "INSERT INTO car_parks (Name, Owner, Location, Postcode, Vacancies) VALUES ('" . $name . "', '" . $owner . "', '" . $location . "', '" . $postcode . "', '" . $vacancies . "')";
-
-        if ($db->query($sql) === TRUE) {
-            echo "New record created successfully";
+        if ($db->query($sql) === true) {
+            echo 'New record created successfully'; //confirmation message if request passes
         } else {
-            echo "Error: " . $sql . "<br>" . $db->error;
+            echo 'Error: ' . $sql . '<br>' . $db->error; //error message if request fails
         }
-
     }
 
     ?>
 
 </div>
 
-<div>
+<div class="read">
 
     <h1>View database.</h1>
 
-    <?php
-
-    echo 'Click to view current database:';
-
-    ?>
+    <p>Click to view current database:</p>
 
 </div>
 
-<div>
+<div class="read">
 
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-        <input type="submit" name="read" value="View database">
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
+        <input type="submit" name="read" value="View database"> <!--read submit-->
     </form>
 
     <?php
 
-    if (isset($_POST['read'])) {
+    if (isset($_POST['read'])) { //following only occurs if user is reading records
 
-        $sql = "SELECT * FROM car_parks";
+        $sql = 'SELECT * FROM car_parks';
 
         if (!$result = $db->query($sql)) {
-            die('There was an error running the query [' . $db->error . ']');
+            die('There was an error running the query [' . $db->error . ']'); //error message if query fails
         }
+
+        echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
         while ($row = $result->fetch_assoc()) {
-            echo 'ID No.: ' . $row['ID'] . '<br />';
-            echo 'Name: ' . $row['Name'] . '<br />';
-            echo 'Owner: ' . $row['Owner'] . '<br />';
-            echo 'Location: ' . $row['Location'] . '<br />';
-            echo 'Postcode: ' . $row['Postcode'] . '<br />';
-            echo 'Vacancies: ' . $row['Vacancies'] . '<br /><br />';
+            echo '<tr><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td></tr>';
+            //database displayed in a table
         }
-
+        echo '</table>';
     }
-
 
     ?>
 
@@ -195,157 +134,82 @@ echo 'Enter data for the following fields:';
 
 <?php
 
-$idErr = "";
+$idErr = ''; //define empty string
 
-$id = $updatename = $updateowner = $updatelocation = $updatepostcode = $updatevacancies = "";
+$id = ''; //define empty string
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    if (isset($_POST['update'])) {
-
-        if (empty($_POST["id_update"])) {
-            $idErr = "Car park ID number is required";
-        } else {
-            $id = update_input($_POST["id_update"]);
-        }
-
-        if (empty($_POST["updatename"])) {
-        } else {
-            $updatename = update_input($_POST["updatename"]);
-        }
-
-        if (empty($_POST["updateowner"])) {
-        } else {
-            $updateowner = update_input($_POST["updateowner"]);
-        }
-
-        if (empty($_POST["updatelocation"])) {
-        } else {
-            $updatelocation = update_input($_POST["updatelocation"]);
-        }
-
-        if (empty($_POST["updatepostcode"])) {
-        } else {
-            $updatepostcode = update_input($_POST["updatepostcode"]);
-        }
-
-        if (empty($_POST["updatevacancies"])) {
-        } else {
-            $updatevacancies = update_input($_POST["updatevacancies"]);
-        }
+if ($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['update'])) {
+    //following only occurs if user is updating a record
+    if (strlen($_POST['id']) == 0) {
+        $idErr = 'Car park ID number is required';
+    } else {
+        $id = input($_POST['id']); //if input is empty, display error message, else set $id to input
     }
-}
-
-function update_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
 }
 
 ?>
 
-<div>
+<div class="update">
 
     <h1>Update database.</h1>
 
-    <?php
-
-    echo 'Update data in database:';
-
-    ?>
+    <p>Update data in database:</p>
 
 </div>
 
-<div>
+<div class="update">
 
-    <p><span class="error">* required field.</span></p>
+    <p><span>* required field.</span></p>
 
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-        ID: <input type="text" name="id_update">
-        <span class="error">* <?php echo $idErr;?></span>
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
+        <label for="id">ID:</label> <input type="text" name="id" id="id"> <!--id input-->
+        <span>* <?php echo $idErr;?></span> <!--display error if empty-->
         <br><br>
-        Name: <input type="text" name="updatename">
+        <label for="name">Name:</label> <input type="text" name="name" id="name"> <!--name input-->
         <br><br>
-        Owner: <input type="text" name="updateowner">
+        <label for="owner">Owner:</label> <input type="text" name="owner" id="owner"> <!--owner input-->
         <br><br>
-        Location: <input type="text" name="updatelocation">
+        <label for="location">Location:</label> <input type="text" name="location" id="location"> <!--location input-->
         <br><br>
-        Postcode: <input type="text" name="updatepostcode">
+        <label for="postcode">Postcode:</label> <input type="text" name="postcode" id="postcode"> <!--postcode input-->
         <br><br>
-        Vacancies: <input type="text" name="updatevacancies">
+        <label for="vacancies">Vacancies:</label> <input type="text" name="vacancies" id="vacancies"> <!--vacancies input-->
         <br><br>
-        <input type="submit" name="update" value="Update">
+        <input type="submit" name="update" value="Update"> <!--update submit-->
     </form>
 
     <?php
 
-    if (empty($_POST["id_update"])) {
-    }
+    $keysList = array('id'); //define list of columns to update as array
 
-    else {
+    $valuesList = array($id); //define list of fields to update as array
 
-        if (empty($_POST["updatename"])) {
-        }
-        else {
-            $sql = "UPDATE car_parks SET Name='" . $updatename . "' WHERE ID=" . $id . "";
+    if (isset($_POST['update']) && strlen($_POST['id']) !== 0) { //following only occurs if user is updating a record and if id input is not empty
 
-            if ($db->query($sql) === TRUE) {
-            } else {
-                echo "Error: " . $sql . "<br>" . $db->error;
+        foreach ($_POST as $key => $value) {
+            if ($key != 'update' && $key != 'id' and strlen($value) !== 0) { //ignore $_POST['update'] and $_POST['id'], check for empty string
+
+                array_push($keysList, $key);
+
+                array_push($valuesList, $value); //if input is not empty, add the column and field to arrays
             }
         }
 
-        if (empty($_POST["updateowner"])) {
-        }
-        else {
-            $sql = "UPDATE car_parks SET Owner='" . $updateowner . "' WHERE ID=" . $id . "";
+        $queryArray = array(); //define empty array
 
-            if ($db->query($sql) === TRUE) {
-            } else {
-                echo "Error: " . $sql . "<br>" . $db->error;
-            }
+        for ($i = 0; $i <= count($keysList) - 1; ++$i) {
+            $queryArray[$i] = $keysList[$i] . "= '" . $valuesList[$i] . "'"; //merge both arrays into one
         }
 
-        if (empty($_POST["updatelocation"])) {
-        }
-        else {
-            $sql = "UPDATE car_parks SET Location='" . $updatelocation . "' WHERE ID=" . $id . "";
+        $query = implode(', ', $queryArray); //form mysql query code by imploding merged array with commas
 
-            if ($db->query($sql) === TRUE) {
-            } else {
-                echo "Error: " . $sql . "<br>" . $db->error;
-            }
-        }
+        $sql = 'UPDATE car_parks SET ' . $query . ' WHERE id=' . $id . '';
 
-        if (empty($_POST["updatepostcode"])) {
-        }
-        else {
-            $sql = "UPDATE car_parks SET Postcode='" . $updatepostcode . "' WHERE ID=" . $id . "";
-
-            if ($db->query($sql) === TRUE) {
-            } else {
-                echo "Error: " . $sql . "<br>" . $db->error;
-            }
-        }
-
-        if (empty($_POST["updatevacancies"])) {
-        }
-        else {
-            $sql = "UPDATE car_parks SET Vacancies='" . $updatevacancies . "' WHERE ID=" . $id . "";
-
-            if ($db->query($sql) === TRUE) {
-            } else {
-                echo "Error: " . $sql . "<br>" . $db->error;
-            }
-        }
-
-        if ($db->query($sql) === TRUE) {
-            echo "Record updated successfully";
+        if ($db->query($sql) === true) {
+            echo 'New record created successfully'; //confirmation message if request passes
         } else {
-            echo "Error: " . $sql . "<br>" . $db->error;
+            echo 'Error: ' . $sql . '<br>' . $db->error; //error message if request fails
         }
-
     }
 
     ?>
@@ -354,77 +218,53 @@ function update_input($data) {
 
 <?php
 
-$idErr = "";
+$idErr = ''; //define empty string
 
-$id = "";
+$id = ''; //define empty string
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    if (isset($_POST['delete'])) {
-
-        if (empty($_POST["id_delete"])) {
-            $idErr = "Car park ID number is required";
-        } else {
-            $id = delete_input($_POST["id_delete"]);
-        }
+if ($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['delete'])) { //following only occurs if user is deleting a record
+    if (strlen($_POST['id']) == 0) {
+        $idErr = 'Car park ID number is required';
+    } else {
+        $id = input($_POST['id']); //if input is empty, display error message, else set $id to input
     }
-}
-
-function delete_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
 }
 
 ?>
 
-<div>
+<div class="delete">
 
     <h1>Delete data from database.</h1>
 
-    <?php
+    <p>Input ID of car park you want to delete from database:</p>
 
-    echo 'Input ID of car park you want to delete from database:' . '<br />';
-
-    echo 'WARNING: Ensure that the record you want to delete is the correct one. Deleted data cannot be recovered.';
-
-    ?>
+    <p>WARNING: Ensure that the record you want to delete is the correct one. Deleted data cannot be recovered.</p>
 
 </div>
 
-<div>
+<div class="delete">
 
-    <p><span class="error">* required field.</span></p>
+    <p><span>* required field.</span></p>
 
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-        ID: <input type="text" name="id_delete">
-        <span class="error">* <?php echo $idErr;?></span>
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
+        <label for="id">ID:</label> <input type="text" name="id" id="id"> <!--id input-->
+        <span>* <?php echo $idErr;?></span> <!--display error if empty-->
         <br><br>
-        <input type="submit" name="delete" value="Delete">
+        <input type="submit" name="delete" value="Delete"> <!--delete submit-->
     </form>
 
     <?php
 
-    if (empty($_POST["id_delete"])) {
-    }
+    if (isset($_POST['delete']) and strlen($_POST['id']) !== 0) { //following only occurs if user is deleting a record and if id input is not empty
 
-    else {
-        $sql = "DELETE FROM car_parks WHERE ID=" . $id . "";
+        $sql = 'DELETE FROM car_parks WHERE id=' . $id . '';
 
-        if ($db->query($sql) === TRUE) {
+        if ($db->query($sql) === true) {
+            echo 'Record deleted successfully'; //confirmation message if request passes
         } else {
-            echo "Error: " . $sql . "<br>" . $db->error;
-        }
-
-        if ($db->query($sql) === TRUE) {
-            echo "Record deleted successfully";
-        } else {
-            echo "Error: " . $sql . "<br>" . $db->error;
+            echo 'Error: ' . $sql . '<br>' . $db->error; //error message if request fails
         }
     }
-
-
 
     ?>
 
