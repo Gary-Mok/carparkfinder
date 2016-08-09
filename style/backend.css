@@ -2,7 +2,7 @@ body {
     background-color: #FFFFFF;
 }
 
-h1 {
+h1, h2, h3 {
     font-family: Arial;
 }
 
@@ -14,16 +14,20 @@ table, th, td {
     border: 1px solid #000000;
 }
 
-.create {
+.tableContents:hover {
     background-color: #CCCCCC;
 }
 
+.create {
+    background-color: #FFFFFF;
+}
+
 .read {
-    background-color: #DDDDDD;
+    background-color: #FFFFFF;
 }
 
 .update {
-    background-color: #EEEEEE;
+    background-color: #FFFFFF;
 }
 
 .delete {
