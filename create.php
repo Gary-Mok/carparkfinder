@@ -80,16 +80,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
 
     <?php
 
-    if (isset($_POST['create']) and strlen($_POST['name']) !== 0 and strlen($_POST['owner']) !== 0) { //following only occurs if user is creating a record
-
-        $sql = "INSERT INTO car_parks (name, owner, location, postcode, vacancies) VALUES ('" . $name . "', '" . $owner . "', '" . $location . "', '" . $postcode . "', '" . $vacancies . "')";
-
-        if ($db->query($sql) === true) {
-            echo 'New record created successfully'; //confirmation message if request passes
-        } else {
-            echo 'Error: ' . $sql . '<br>' . $db->error; //error message if request fails
-        }
+    if (!isset($_POST['create'])) { //following only occurs if user is creating a record
+        return '';
     }
+
+    if (strlen($_POST['name']) == 0) {
+        return '';
+    }
+
+    if(strlen($_POST['owner']) == 0) {
+        return '';
+    }
+
+    $sql = "INSERT INTO car_parks (name, owner, location, postcode, vacancies) VALUES ('" . $name . "', '" . $owner . "', '" . $location . "', '" . $postcode . "', '" . $vacancies . "')";
+
+    $idCreate = '';
+
+    if ($db->query($sql) === true) {
+        $idCreate = $db->insert_id;
+        echo 'New record created successfully'; //confirmation message if request passes
+    } else {
+        echo 'Error: ' . $sql . '<br>' . $db->error; //error message if request fails
+    }
+
+    echo '<p>Result:</p>';
+
+    $sqlCreate = 'SELECT * FROM car_parks WHERE id=' . $idCreate . '';
+
+    if (!$result = $db->query($sqlCreate)) {
+        die('There was an error running the query [' . $db->error . ']'); //error message if query fails
+    }
+
+    echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
+
+    while ($row = $result->fetch_assoc()) {
+        echo '<tr><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td></tr>';
+        //database displayed in a table
+    }
+    echo '</table>';
 
     ?>
 
