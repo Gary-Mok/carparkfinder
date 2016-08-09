@@ -20,6 +20,11 @@
 include 'bootstrap.php';
 
 $elements = array(
+    'id' => array(
+        'description' => 'ID No.',
+        'isRequired' => false,
+        'type' => 'text',
+    ),
     'name' => array(
         'description' => 'Carpark Name',
         'isRequired' => false,
@@ -40,8 +45,13 @@ $elements = array(
         'isRequired' => false,
         'type' => 'text',
     ),
+    'vacancies' => array(
+        'description' => 'Vacancies',
+        'isRequired' => false,
+        'type' => 'text',
+    ),
     'submit' => array(
-        'description' => 'Submit',
+        'description' => 'Search',
         'isRequired' => false,
         'type' => 'submit',
         'label' => false,
@@ -52,6 +62,7 @@ $elements = array(
 ?>
 
 <div>
+
     <h1>Delete records</h1>
 
     <p><a href="create.php">Create</a> | <a href="read.php">Read</a> | <a href="update.php">Update</a></p>
@@ -61,51 +72,57 @@ $elements = array(
     <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
         <?php echo generateElements($elements) ?>
     </form>
+
 </div>
 
-<?php
+<?php if(!isset($_POST['submit'])) : ?>
 
-if(!isset($_POST['submit'])) {
+    <div>
 
-    $sql = 'SELECT * FROM car_parks';
+        <?php
 
-    if (!$result = $db->query($sql)) {
-        die('There was an error running the query [' . $db->error . ']'); //error message if query fails
-    }
+        $sql = 'SELECT * FROM car_parks';
 
-    echo '<form method="post">';
+        if (!$result = $db->query($sql)) {
+            die('There was an error running the query [' . $db->error . ']'); //error message if query fails
+        }
 
-    echo 'Master checkbox <input type="checkbox" id="ckbCheckAll" name="all" value="">';
+        echo '<form method="post">';
 
-    echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
+        echo '<strong>Select all</strong> <input type="checkbox" id="ckbCheckAll" name="all" value="">';
 
-    while ($row = $result->fetch_array()) {
-        echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td><td><input type="checkbox" class="checkBoxClass" id="Checkbox' . $row['id'] . '" name="list[]" value="' . $row['id'] . '"></td></tr>';
-    }
+        echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
-    echo '</table><br>';
+        while ($row = $result->fetch_array()) {
+            echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td><td><input type="checkbox" class="checkBoxClass" id="Checkbox' . $row['id'] . '" name="list[]" value="' . $row['id'] . '"></td></tr>';
+        }
 
-    echo '<input type="submit" name="delete" id="delete" value="Delete">';
+        echo '</table><br>';
 
-    echo '</form>';
+        echo '<input type="submit" name="delete" id="delete" value="Delete">';
 
-    if(!isset($_POST['delete'])) {
-        return '';
-    }
+        echo '</form>';
 
-    if (empty($_POST['list'])) {
-        return '';
-    }
-    $listString = implode(', ', $_POST['list']);
-    $sqlDelete = 'DELETE FROM car_parks WHERE id IN ('. $listString . ')';
+        if(!isset($_POST['delete'])) {
+            return '';
+        }
 
-    if ($db->query($sqlDelete) === false) {
-        echo 'Error: ' . $sql . '<br>' . $db->error; //error message if request fails
-        return;
-    }
-}
+        if (empty($_POST['list'])) {
+            return '';
+        }
+        $listString = implode(', ', $_POST['list']);
+        $sqlDelete = 'DELETE FROM car_parks WHERE id IN ('. $listString . ')';
 
-?>
+        if ($db->query($sqlDelete) === false) {
+            echo 'Error: ' . $sql . '<br>' . $db->error; //error message if request fails
+            return;
+        }
+
+        ?>
+
+    </div>
+
+<?php endif; ?>
 
 <script type="text/javascript">
 
@@ -124,7 +141,7 @@ if(!isset($_POST['submit'])) {
 
         echo '<form method="post">';
 
-        echo 'Master checkbox <input type="checkbox" id="ckbCheckAll" name="all" value="">';
+        echo '<strong>Select all</strong> <input type="checkbox" id="ckbCheckAll" name="all" value="">';
 
         echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
