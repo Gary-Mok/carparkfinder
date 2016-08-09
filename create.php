@@ -54,6 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
 
     <h1>Create records</h1>
 
+    <p><a href="read.php">Read</a> | <a href="update.php">Update</a> | <a href="delete.php">Delete</a></p>
+
     <p>Enter data for the following fields:</p>
 
 </div>

@@ -18,6 +18,10 @@ table, th, td {
     border: 1px solid #000000;
 }
 
+.tableContents:hover {
+    background-color: #CCCCCC;
+}
+
 .create {
     background-color: #FFFFFF;
 }

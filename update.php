@@ -22,6 +22,8 @@ include 'bootstrap.php';
 
     <h1>Update records</h1>
 
+    <p><a href="create.php">Create</a> | <a href="read.php">Read</a> | <a href="delete.php">Delete</a></p>
+
     <p>Choose record to update:</p>
 
 </div>
@@ -44,7 +46,7 @@ include 'bootstrap.php';
         echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
         while ($row = $result->fetch_array()) {
-            echo '<tr><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td><td><input type="radio" name="check" value="' . $row['id'] . '"></td></tr>';
+            echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td><td><input type="radio" name="check" value="' . $row['id'] . '"></td></tr>';
         }
 
         echo '</table><br>';

@@ -22,6 +22,8 @@ include 'bootstrap.php';
 
     <h1>View records</h1>
 
+    <p><a href="create.php">Create</a> | <a href="update.php">Update</a> | <a href="delete.php">Delete</a></p>
+
 </div>
 
 <div class="read">
