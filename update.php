@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <title>
-        Update
+        Car Park Finder - Update
     </title>
 </head>
 
@@ -23,7 +23,7 @@ $elements = array(
         'type' => 'text',
     ),
     'name' => array(
-        'description' => 'Carpark Name',
+        'description' => 'Car Park Name',
         'isRequired' => false,
         'type' => 'text',
     ),
@@ -60,7 +60,9 @@ $elements = array(
 
 <div>
 
-    <h1>Update records</h1>
+    <h1>Car Park Finder</h1>
+
+    <h2>Update records</h2>
 
     <p><a href="create.php">Create</a> | <a href="read.php">Read</a> | <a href="delete.php">Delete</a></p>
 
@@ -99,11 +101,11 @@ $elements = array(
 
             ?>
 
-            <p>Update fields:</p>
+            <h3>Update fields:</h3>
 
-            <label for="name">Name:</label> <input type="text" name="name" id="name"> <!--name input-->
+            <label for="name">Car Park Name:</label> <input type="text" name="name" id="name"> <!--name input-->
             <br><br>
-            <label for="owner">Owner:</label> <input type="text" name="owner" id="owner"> <!--owner input-->
+            <label for="owner">Owner Name:</label> <input type="text" name="owner" id="owner"> <!--owner input-->
             <br><br>
             <label for="location">Location:</label> <input type="text" name="location" id="location"> <!--location input-->
             <br><br>

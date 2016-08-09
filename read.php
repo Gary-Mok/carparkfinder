@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <title>
-        Read
+        Car Park Finder - Read
     </title>
 </head>
 
@@ -23,7 +23,7 @@ $elements = array(
         'type' => 'text',
     ),
     'name' => array(
-        'description' => 'Carpark Name',
+        'description' => 'Car Park Name',
         'isRequired' => false,
         'type' => 'text',
     ),
@@ -60,7 +60,9 @@ $elements = array(
 
 <div>
 
-    <h1>View records</h1>
+    <h1>Car Park Finder</h1>
+
+    <h2>View records</h2>
 
     <p><a href="create.php">Create</a> | <a href="update.php">Update</a> | <a href="delete.php">Delete</a></p>
 

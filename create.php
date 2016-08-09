@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <title>
-        Create
+        Car Park Finder - Create
     </title>
 </head>
 
@@ -52,7 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
 
 <div class="create">
 
-    <h1>Create records</h1>
+    <h1>Car Park Finder</h1>
+
+    <h2>Create records</h2>
 
     <p><a href="read.php">Read</a> | <a href="update.php">Update</a> | <a href="delete.php">Delete</a></p>
 
@@ -65,10 +67,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
     <p><span>* required field.</span></p>
 
     <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
-        <label for="name">Name:</label> <input type="text" name="name" id="name"> <!--name input-->
+        <label for="name">Car Park Name:</label> <input type="text" name="name" id="name"> <!--name input-->
         <span>* <?php echo $nameErr;?></span> <!--display error if empty-->
         <br><br>
-        <label for="owner">Owner:</label> <input type="text" name="owner" id="owner"> <!--owner input-->
+        <label for="owner">Owner Name:</label> <input type="text" name="owner" id="owner"> <!--owner input-->
         <span>* <?php echo $ownerErr;?></span> <!--display error if empty-->
         <br><br>
         <label for="location">Location:</label> <input type="text" name="location" id="location"> <!--location input-->

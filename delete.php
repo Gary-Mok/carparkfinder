@@ -9,7 +9,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <title>
-        Delete
+        Car Park Finder - Delete
     </title>
 </head>
 
@@ -26,7 +26,7 @@ $elements = array(
         'type' => 'text',
     ),
     'name' => array(
-        'description' => 'Carpark Name',
+        'description' => 'Car Park Name',
         'isRequired' => false,
         'type' => 'text',
     ),
@@ -63,11 +63,13 @@ $elements = array(
 
 <div>
 
-    <h1>Delete records</h1>
+    <h1>Car Park Finder</h1>
+
+    <h2>Delete records</h2>
 
     <p><a href="create.php">Create</a> | <a href="read.php">Read</a> | <a href="update.php">Update</a></p>
 
-    <p>Choose record(s) to delete:</p>
+    <p>Choose/search for record(s) to delete:</p>
 
     <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
         <?php echo generateElements($elements) ?>
