@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
 
 <div class="create">
 
-    <h1>Create new data.</h1>
+    <h1>Create records</h1>
 
     <p>Enter data for the following fields:</p>
 

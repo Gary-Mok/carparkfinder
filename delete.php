@@ -50,7 +50,7 @@ include 'bootstrap.php';
 
     echo '</table><br>';
 
-    echo '<input type="submit" name="delete" value="Delete">';
+    echo '<input type="submit" name="delete" id="delete" value="Delete">';
 
     echo '</form>';
 
@@ -65,10 +65,9 @@ include 'bootstrap.php';
     if (isset($_POST['all'])) {
         $sqlDelete = 'DELETE FROM car_parks WHERE id IN ('. $allString . ')';
 
-        if ($db->query($sqlDelete) === true) {
-            echo 'Record deleted successfully'; //confirmation message if request passes
-        } else {
+        if ($db->query($sqlDelete) === false) {
             echo 'Error: ' . $sql . '<br>' . $db->error; //error message if request fails
+            return;
         }
     }
 
@@ -76,14 +75,19 @@ include 'bootstrap.php';
         $listString = implode(', ', $_POST['list']);
         $sqlDelete = 'DELETE FROM car_parks WHERE id IN ('. $listString . ')';
 
-        if ($db->query($sqlDelete) === true) {
-            echo 'Record deleted successfully'; //confirmation message if request passes
-        } else {
+        if ($db->query($sqlDelete) === false) {
             echo 'Error: ' . $sql . '<br>' . $db->error; //error message if request fails
+            return;
         }
     }
     ?>
 </div>
+
+<script type="text/javascript">
+
+    document.getElementById('delete').click();
+
+</script>
 
 </body>
 

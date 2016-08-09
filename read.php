@@ -20,7 +20,7 @@ include 'bootstrap.php';
 
 <div class="read">
 
-    <h1>View database</h1>
+    <h1>View records</h1>
 
 </div>
 

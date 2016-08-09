@@ -62,7 +62,7 @@ include 'bootstrap.php';
         <label for="vacancies">Vacancies:</label> <input type="text" name="vacancies" id="vacancies"> <!--vacancies input-->
         <br><br>
 
-        <input type="submit" name="update" value="Update">
+        <input type="submit" name="update" id="update" value="Update">
 
     </form>
 
@@ -99,30 +99,19 @@ include 'bootstrap.php';
 
     $sqlUpdate = 'UPDATE car_parks SET ' . $query . ' WHERE id=' . $_POST['check'] . '';
 
-    if ($db->query($sqlUpdate) === true) {
-        echo 'New record created successfully'; //confirmation message if request passes
-    } else {
+    if ($db->query($sqlUpdate) === false) {
         echo 'Error: ' . $sql . '<br>' . $db->error; //error message if request fails
+        return;
     }
-
-    echo '<p>Result:</p>';
-
-    $sql = 'SELECT * FROM car_parks WHERE id=' . $_POST['check'] . '';
-
-    if (!$result = $db->query($sql)) {
-        die('There was an error running the query [' . $db->error . ']'); //error message if query fails
-    }
-
-    echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
-
-    while ($row = $result->fetch_assoc()) {
-        echo '<tr><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td></tr>';
-        //database displayed in a table
-    }
-    echo '</table>';
 
     ?>
 </div>
+
+<script type="text/javascript">
+
+    document.getElementById('update').click();
+
+</script>
 
 </body>
 
