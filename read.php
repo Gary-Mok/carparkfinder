@@ -74,32 +74,32 @@ $elements = array(
 
 <?php if(!isset($_POST['submit'])) : ?>
 
-<div>
+    <div>
 
-    <?php
+        <?php
 
-    $sql = 'SELECT * FROM car_parks';
+        $sql = 'SELECT * FROM car_parks';
 
-    if (!$result = $db->query($sql)) {
-        die('There was an error running the query [' . $db->error . ']'); //error message if query fails
-    }
+        if (!$result = $db->query($sql)) {
+            die('There was an error running the query [' . $db->error . ']'); //error message if query fails
+        }
 
-    echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
+        echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
-    while ($row = $result->fetch_assoc()) {
-        echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td></tr>';
-        //database displayed in a table
-    }
-    echo '</table>';
+        while ($row = $result->fetch_assoc()) {
+            echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td></tr>';
+            //database displayed in a table
+        }
+        echo '</table>';
 
-    ?>
+        ?>
 
-</div>
+    </div>
 
 <?php endif; ?>
 
 <?php if ('POST' === $_SERVER['REQUEST_METHOD']) : ?>
-    
+
     <div>
         <?php
         if (!$result = $db->query($query = getCarparkSearchQuery($elements, $_REQUEST, $db))) {
@@ -115,7 +115,7 @@ $elements = array(
         echo '</table><br>';
         ?>
     </div>
-    
+
 <?php endif; ?>
 
 </body>

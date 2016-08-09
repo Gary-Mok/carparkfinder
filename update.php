@@ -74,88 +74,88 @@ $elements = array(
 
 <?php if(!isset($_POST['submit'])) : ?>
 
-<div>
-    <?php
-
-    $sql = 'SELECT * FROM car_parks';
-
-    if (!$result = $db->query($sql)) {
-        die('There was an error running the query [' . $db->error . ']'); //error message if query fails
-    }
-
-    ?>
-
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
-
+    <div>
         <?php
 
-        echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
+        $sql = 'SELECT * FROM car_parks';
 
-        while ($row = $result->fetch_array()) {
-            echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td><td><input type="radio" name="check" value="' . $row['id'] . '"></td></tr>';
+        if (!$result = $db->query($sql)) {
+            die('There was an error running the query [' . $db->error . ']'); //error message if query fails
         }
-
-        echo '</table><br>';
 
         ?>
 
-        <p>Update fields:</p>
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
 
-        <label for="name">Name:</label> <input type="text" name="name" id="name"> <!--name input-->
-        <br><br>
-        <label for="owner">Owner:</label> <input type="text" name="owner" id="owner"> <!--owner input-->
-        <br><br>
-        <label for="location">Location:</label> <input type="text" name="location" id="location"> <!--location input-->
-        <br><br>
-        <label for="postcode">Postcode:</label> <input type="text" name="postcode" id="postcode"> <!--postcode input-->
-        <br><br>
-        <label for="vacancies">Vacancies:</label> <input type="text" name="vacancies" id="vacancies"> <!--vacancies input-->
-        <br><br>
+            <?php
 
-        <input type="submit" name="update" id="update" value="Update">
+            echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
-    </form>
+            while ($row = $result->fetch_array()) {
+                echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td><td><input type="radio" name="check" value="' . $row['id'] . '"></td></tr>';
+            }
 
-    <?php
+            echo '</table><br>';
 
-    if(!isset($_POST['update'])) {
-        return '';
-    }
+            ?>
 
-    if (!isset($_POST['check'])) {
-        return '';
-    }
+            <p>Update fields:</p>
 
-    $keysList = array('id'); //define list of columns to update as array
+            <label for="name">Name:</label> <input type="text" name="name" id="name"> <!--name input-->
+            <br><br>
+            <label for="owner">Owner:</label> <input type="text" name="owner" id="owner"> <!--owner input-->
+            <br><br>
+            <label for="location">Location:</label> <input type="text" name="location" id="location"> <!--location input-->
+            <br><br>
+            <label for="postcode">Postcode:</label> <input type="text" name="postcode" id="postcode"> <!--postcode input-->
+            <br><br>
+            <label for="vacancies">Vacancies:</label> <input type="text" name="vacancies" id="vacancies"> <!--vacancies input-->
+            <br><br>
 
-    $valuesList = array($_POST['check']); //define list of fields to update as array
+            <input type="submit" name="update" id="update" value="Update">
 
-    foreach ($_POST as $key => $value) {
-        if ($key != 'update' && $key != 'check' and strlen($value) !== 0) { //ignore $_POST['update'] and $_POST['id'], check for empty string
+        </form>
 
-            array_push($keysList, $key);
+        <?php
 
-            array_push($valuesList, $value); //if input is not empty, add the column and field to arrays
+        if(!isset($_POST['update'])) {
+            return '';
         }
-    }
 
-    $queryArray = array(); //define empty array
+        if (!isset($_POST['check'])) {
+            return '';
+        }
 
-    for ($i = 0; $i <= count($keysList) - 1; ++$i) {
-        $queryArray[$i] = $keysList[$i] . "= '" . $valuesList[$i] . "'"; //merge both arrays into one
-    }
+        $keysList = array('id'); //define list of columns to update as array
 
-    $query = implode(', ', $queryArray); //form mysql query code by imploding merged array with commas
+        $valuesList = array($_POST['check']); //define list of fields to update as array
 
-    $sqlUpdate = 'UPDATE car_parks SET ' . $query . ' WHERE id=' . $_POST['check'] . '';
+        foreach ($_POST as $key => $value) {
+            if ($key != 'update' && $key != 'check' and strlen($value) !== 0) { //ignore $_POST['update'] and $_POST['id'], check for empty string
 
-    if ($db->query($sqlUpdate) === false) {
-        echo 'Error: ' . $sql . '<br>' . $db->error; //error message if request fails
-        return;
-    }
+                array_push($keysList, $key);
 
-    ?>
-</div>
+                array_push($valuesList, $value); //if input is not empty, add the column and field to arrays
+            }
+        }
+
+        $queryArray = array(); //define empty array
+
+        for ($i = 0; $i <= count($keysList) - 1; ++$i) {
+            $queryArray[$i] = $keysList[$i] . "= '" . $valuesList[$i] . "'"; //merge both arrays into one
+        }
+
+        $query = implode(', ', $queryArray); //form mysql query code by imploding merged array with commas
+
+        $sqlUpdate = 'UPDATE car_parks SET ' . $query . ' WHERE id=' . $_POST['check'] . '';
+
+        if ($db->query($sqlUpdate) === false) {
+            echo 'Error: ' . $sql . '<br>' . $db->error; //error message if request fails
+            return;
+        }
+
+        ?>
+    </div>
 
 <?php endif; ?>
 
