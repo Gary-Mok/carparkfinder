@@ -18,18 +18,9 @@ table, th, td {
     background-color: #CCCCCC;
 }
 
-.create {
-    background-color: #FFFFFF;
-}
-
-.read {
-    background-color: #FFFFFF;
-}
-
-.update {
-    background-color: #FFFFFF;
-}
-
+.create,
+.read,
+.update,
 .delete {
     background-color: #FFFFFF;
 }

@@ -64,7 +64,7 @@ $elements = array(
 
     <h2>View records</h2>
 
-    <p><a href="create.php">Create</a> | <a href="update.php">Update</a> | <a href="delete.php">Delete</a></p>
+    <?php include 'navigation.php' ?>
 
     <p>View/search the database:</p>
 

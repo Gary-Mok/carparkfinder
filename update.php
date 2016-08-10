@@ -64,7 +64,7 @@ $elements = array(
 
     <h2>Update records</h2>
 
-    <p><a href="create.php">Create</a> | <a href="read.php">Read</a> | <a href="delete.php">Delete</a></p>
+    <?php include 'navigation.php' ?>
 
     <p>Choose/search for a record to update:</p>
 

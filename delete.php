@@ -67,7 +67,7 @@ $elements = array(
 
     <h2>Delete records</h2>
 
-    <p><a href="create.php">Create</a> | <a href="read.php">Read</a> | <a href="update.php">Update</a></p>
+    <?php include 'navigation.php' ?>
 
     <p>Choose/search for record(s) to delete:</p>
 
