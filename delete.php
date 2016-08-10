@@ -89,7 +89,7 @@ $elements = array(
             die('There was an error running the query [' . $db->error . ']'); //error message if query fails
         }
 
-        echo '<form method="post">';
+        echo '<form method="post" id="delete">';
 
         echo '<strong>Select all</strong> <input type="checkbox" id="ckbCheckAll" name="all" value="">';
 
@@ -101,17 +101,14 @@ $elements = array(
 
         echo '</table><br>';
 
-        echo '<input type="submit" name="delete" id="delete" value="Delete">';
+        echo '<input type="button" name="delete" id="deleteButton" value="Delete">';
 
         echo '</form>';
-
-        if(!isset($_POST['delete'])) {
-            return '';
-        }
 
         if (empty($_POST['list'])) {
             return '';
         }
+
         $listString = implode(', ', $_POST['list']);
         $sqlDelete = 'DELETE FROM car_parks WHERE id IN ('. $listString . ')';
 
@@ -126,13 +123,7 @@ $elements = array(
 
 <?php endif; ?>
 
-<script type="text/javascript">
-
-    document.getElementById('delete').click();
-
-</script>
-
-<?php if ('POST' === $_SERVER['REQUEST_METHOD']) : ?>
+<?php if(isset($_POST['submit'])) : ?>
 
     <div>
         <?php
@@ -141,7 +132,7 @@ $elements = array(
             die('There was an error running the query [' . $db->error . ']'); //error message if query fails
         }
 
-        echo '<form method="post">';
+        echo '<form method="post" id="delete">';
 
         echo '<strong>Select all</strong> <input type="checkbox" id="ckbCheckAll" name="all" value="">';
 
@@ -153,17 +144,14 @@ $elements = array(
 
         echo '</table><br>';
 
-        echo '<input type="submit" name="delete" id="delete" value="Delete">';
+        echo '<input type="button" name="delete" id="deleteButton" value="Delete">';
 
         echo '</form>';
-
-        if(!isset($_POST['delete'])) {
-            return '';
-        }
 
         if (empty($_POST['list'])) {
             return '';
         }
+
         $listString = implode(', ', $_POST['list']);
         $sqlDelete = 'DELETE FROM car_parks WHERE id IN ('. $listString . ')';
 
@@ -171,16 +159,11 @@ $elements = array(
             echo 'Error: ' . $sql . '<br>' . $db->error; //error message if request fails
             return;
         }
+
         ?>
     </div>
 
 <?php endif; ?>
-
-<script type="text/javascript">
-
-    document.getElementById('delete').click();
-
-</script>
 
 </body>
 
