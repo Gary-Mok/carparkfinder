@@ -12,6 +12,8 @@
 
 include 'bootstrap.php';
 
+session_start();
+
 $elements = array(
     'name' => array(
         'description' => 'Carpark Name',
@@ -43,8 +45,19 @@ $elements = array(
 );
 ?>
 
+
+<h1>Car Park Finder</h1>
+
+<?php
+if (!isset($_SESSION['username'])) {
+    echo '<div><p><a href="login.php">Log in</a> or <a href="register.php">register</a></p></div>';
+} else {
+    include 'navigation.php';
+}
+?>
+
 <div class="filter">
-    <h1>Car Park Finder</h1>
+    <h2>Search for a car park</h2>
     <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
         <?php echo generateElements($elements) ?>
     </form>

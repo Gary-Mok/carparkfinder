@@ -14,6 +14,14 @@
 
 <?php
 
+session_start();
+
+if (!isset($_SESSION['username']))
+{
+    header("Location: search.php");
+    die();
+}
+
 include 'bootstrap.php';
 
 $elements = array(
@@ -62,9 +70,13 @@ $elements = array(
 
     <h1>Car Park Finder</h1>
 
-    <h2>Update records</h2>
+</div>
 
     <?php include 'navigation.php' ?>
+
+<div>
+
+    <h2>Update records</h2>
 
     <p>Choose/search for a record to update:</p>
 
@@ -254,11 +266,11 @@ $elements = array(
 
 <?php endif; ?>
 
-<script type="text/javascript">
+<?php
 
-    document.getElementById('update').click();
+header("Location: update.php");
 
-</script>
+?>
 
 </body>
 

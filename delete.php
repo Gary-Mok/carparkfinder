@@ -17,6 +17,14 @@
 
 <?php
 
+session_start();
+
+if (!isset($_SESSION['username']))
+{
+    header("Location: search.php");
+    die();
+}
+
 include 'bootstrap.php';
 
 $elements = array(
@@ -65,9 +73,13 @@ $elements = array(
 
     <h1>Car Park Finder</h1>
 
-    <h2>Delete records</h2>
+</div>
 
     <?php include 'navigation.php' ?>
+
+<div>
+
+    <h2>Delete records</h2>
 
     <p>Choose/search for record(s) to delete:</p>
 
@@ -164,6 +176,12 @@ $elements = array(
     </div>
 
 <?php endif; ?>
+
+<?php
+
+header("Location: delete.php");
+
+?>
 
 </body>
 
