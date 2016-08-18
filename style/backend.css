@@ -24,3 +24,9 @@ table, th, td {
 .delete {
     background-color: #FFFFFF;
 }
+
+.navigation {
+    border: 1px solid #000000;
+    border-radius: 5px;
+    width: 350px;
+}

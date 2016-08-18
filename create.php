@@ -14,6 +14,14 @@
 
 <?php
 
+session_start();
+
+if (!isset($_SESSION['username']))
+{
+    header("Location: search.php");
+    die();
+}
+
 include 'bootstrap.php'; //imports functions from functions.php
 
 $nameErr = $ownerErr = ''; //defines empty strings
@@ -54,9 +62,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
 
     <h1>Car Park Finder</h1>
 
-    <h2>Create records</h2>
+</div>
 
-    <?php include 'navigation.php' ?>
+<?php include 'navigation.php' ?>
+
+<div>
+
+    <h2>Create records</h2>
 
     <p>Enter data for the following fields:</p>
 

@@ -2,14 +2,24 @@ body {
     background-color: #FFFFFF;
 }
 
+h1, h2, h3 {
+    font-family: Arial;
+}
+
 table, th, td {
     border: 1px solid #000000;
 }
 
 .location {
-    background-color: #CCCCCC;
+    background-color: #FFFFFF;
 }
 
 .postcode {
     background-color: #FFFFFF;
+}
+
+.navigation {
+    border: 1px solid #000000;
+    border-radius: 5px;
+    width: 350px;
 }
