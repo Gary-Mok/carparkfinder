@@ -17,15 +17,12 @@
 
 <?php
 
-session_start();
-
-if (!isset($_SESSION['username']))
-{
-    header("Location: search.php");
-    die();
-}
-
 include 'bootstrap.php';
+
+if (!isset($_SESSION['username'])) {
+    header("Location: search.php");
+    exit();
+}
 
 $elements = array(
     'id' => array(
@@ -75,7 +72,7 @@ $elements = array(
 
 </div>
 
-    <?php include 'navigation.php' ?>
+<?php include 'navigation.php' ?>
 
 <div>
 
@@ -89,16 +86,16 @@ $elements = array(
 
 </div>
 
-<?php if(!isset($_POST['submit'])) : ?>
+<div>
 
-    <div>
+    <?php
 
-        <?php
+    if(!isset($_POST['submit'])) {
 
         $sql = 'SELECT * FROM car_parks';
 
         if (!$result = $db->query($sql)) {
-            die('There was an error running the query [' . $db->error . ']'); //error message if query fails
+            die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
         }
 
         echo '<form method="post" id="delete">';
@@ -107,7 +104,7 @@ $elements = array(
 
         echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
-        while ($row = $result->fetch_array()) {
+        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
             echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td><td><input type="checkbox" class="checkBoxClass" id="Checkbox' . $row['id'] . '" name="list[]" value="' . $row['id'] . '"></td></tr>';
         }
 
@@ -122,26 +119,25 @@ $elements = array(
         }
 
         $listString = implode(', ', $_POST['list']);
-        $sqlDelete = 'DELETE FROM car_parks WHERE id IN ('. $listString . ')';
+        $sqlDelete = 'DELETE FROM car_parks WHERE id IN (' . $listString . ')';
 
         if ($db->query($sqlDelete) === false) {
-            echo 'Error: ' . $sql . '<br>' . $db->error; //error message if request fails
+            echo 'Error: ' . $sql . '<br>' . $db->errorInfo(); //error message if request fails
             return;
         }
 
-        ?>
+    }
 
-    </div>
+    ?>
 
-<?php endif; ?>
+</div>
 
-<?php if(isset($_POST['submit'])) : ?>
+<div>
 
-    <div>
-        <?php
+    <?php if(isset($_POST['submit'])) {
 
         if (!$result = $db->query($query = getCarparkSearchQuery($elements, $_REQUEST, $db))) {
-            die('There was an error running the query [' . $db->error . ']'); //error message if query fails
+            die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
         }
 
         echo '<form method="post" id="delete">';
@@ -150,7 +146,7 @@ $elements = array(
 
         echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
-        while ($row = $result->fetch_array()) {
+        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
             echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td><td><input type="checkbox" class="checkBoxClass" id="Checkbox' . $row['id'] . '" name="list[]" value="' . $row['id'] . '"></td></tr>';
         }
 
@@ -165,17 +161,18 @@ $elements = array(
         }
 
         $listString = implode(', ', $_POST['list']);
-        $sqlDelete = 'DELETE FROM car_parks WHERE id IN ('. $listString . ')';
+        $sqlDelete = 'DELETE FROM car_parks WHERE id IN (' . $listString . ')';
 
         if ($db->query($sqlDelete) === false) {
-            echo 'Error: ' . $sql . '<br>' . $db->error; //error message if request fails
+            echo 'Error: ' . $sql . '<br>' . $db->errorInfo(); //error message if request fails
             return;
         }
 
-        ?>
-    </div>
+    }
 
-<?php endif; ?>
+    ?>
+
+</div>
 
 <?php
 

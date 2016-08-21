@@ -14,15 +14,12 @@
 
 <?php
 
-session_start();
-
-if (!isset($_SESSION['username']))
-{
-    header("Location: search.php");
-    die();
-}
-
 include 'bootstrap.php';
+
+if (!isset($_SESSION['username'])) {
+    header("Location: search.php");
+    exit();
+}
 
 $elements = array(
     'id' => array(
@@ -95,12 +92,12 @@ $elements = array(
         $sql = 'SELECT * FROM car_parks';
 
         if (!$result = $db->query($sql)) {
-            die('There was an error running the query [' . $db->error . ']'); //error message if query fails
+            die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
         }
 
         echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
-        while ($row = $result->fetch_assoc()) {
+        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
             echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td></tr>';
             //database displayed in a table
         }
@@ -117,12 +114,12 @@ $elements = array(
     <div>
         <?php
         if (!$result = $db->query($query = getCarparkSearchQuery($elements, $_REQUEST, $db))) {
-            die('There was an error running the query [' . $db->error . ']'); //error message if query fails
+            die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
         }
 
         echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
-        while ($row = $result->fetch_array()) {
+        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
             echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td></tr>';
         }
 

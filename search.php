@@ -12,8 +12,6 @@
 
 include 'bootstrap.php';
 
-session_start();
-
 $elements = array(
     'name' => array(
         'description' => 'Carpark Name',
@@ -68,12 +66,12 @@ if (!isset($_SESSION['username'])) {
         <h1>Result</h1>
         <?php
         if (!$result = $db->query($query = getCarparkSearchQuery($elements, $_REQUEST, $db))) {
-            die('There was an error running the query [' . $db->error . ']'); //error message if query fails
+            die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
         }
 
         echo '<table><tr><th>Name</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
-        while ($row = $result->fetch_array()) {
+        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
             echo '<tr><td>' . $row['name'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td></tr>';
         }
 

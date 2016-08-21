@@ -18,30 +18,37 @@
 
 include 'bootstrap.php';
 
-session_start();
+if (isset($_SESSION['username'])) {
+    header("Location: search.php");
+    exit();
+}
 
-if (!isset($_POST['submit'])){
-    ?>
-    <form action="<?=$_SERVER['PHP_SELF']?>" method="post">
-        <label for="username">Username:</label> <input type="text" name="username" id="username" /><br />
-        <label for="password">Password:</label> <input type="password" name="password" id="password" /><br />
-        <input type="submit" name="submit" value="Login" />
-    </form>
-    <?php
-} else {
+?>
+
+<form action="<?=$_SERVER['PHP_SELF']?>" method="post">
+    <label for="username">Username:</label> <input type="text" name="username" id="username" />
+    <label for="password">Password:</label> <input type="password" name="password" id="password" />
+    <input type="submit" name="submit" value="Login" />
+</form>
+
+<p><a href="search.php">Back</a></p>
+
+<?php
+
+if (isset($_POST['submit'])){
 
     $username = $_POST['username'];
     $password = $_POST['password'];
     $crypt = "";
 
     $sql = "SELECT * from members WHERE username LIKE '{$username}' LIMIT 1";
-    $result = $db->query($sql);
-    if (!$result || !$result->num_rows == 1) {
+    $query = $db->prepare($sql);
+    $query->execute();
+    $result = $query->fetch(PDO::FETCH_ASSOC);
+    if (!isset($result['id'])) {
         echo "<p>Invalid username</p>";
-        echo "<p><a href='login.php'>Retry</a></p>";
     } else {
-        $row = $result->fetch_assoc();
-        $crypt = $row['password'];
+        $crypt = $result['password'];
 
         if (password_verify($password, $crypt)) {
 
