@@ -89,8 +89,10 @@ $elements = array(
         <?php
 
         $sql = 'SELECT * FROM car_parks';
+        $query = $db->prepare($sql);
+        $update = $query->execute();
 
-        if (!$result = $db->query($sql)) {
+        if ($update === false) {
             die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
         }
 
@@ -102,7 +104,7 @@ $elements = array(
 
             echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
-            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td><td><input type="radio" name="check" value="' . $row['id'] . '"></td></tr>';
             }
 
@@ -158,10 +160,13 @@ $elements = array(
 
         $query = implode(', ', $queryArray); //form mysql query code by imploding merged array with commas
 
-        $sqlUpdate = 'UPDATE car_parks SET ' . $query . ' WHERE id=' . $_POST['check'] . '';
+        $sqlUpdate = 'UPDATE car_parks SET ' . $query . 'WHERE id= :id';
+        $queryUpdate = $db->prepare($sqlUpdate);
+        $update = $queryUpdate->execute(['id' => $_POST['check']]);
 
-        if ($db->query($sqlUpdate) === false) {
-            echo 'Error: ' . $sql . '<br>' . $db->errorInfo(); //error message if request fails
+        if ($update === false) {
+            echo 'Error: ' . $sqlUpdate . '<br>';
+            var_dump($db->errorInfo()); //error message if request fails
             return;
         }
 
@@ -170,11 +175,11 @@ $elements = array(
 
 <?php endif; ?>
 
-<script type="text/javascript">
+<?php
 
-    document.getElementById('update').click();
+header("Location: update.php");
 
-</script>
+?>
 
 <?php if ('POST' === $_SERVER['REQUEST_METHOD']) : ?>
 

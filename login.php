@@ -41,9 +41,9 @@ if (isset($_POST['submit'])){
     $password = $_POST['password'];
     $crypt = "";
 
-    $sql = "SELECT * from members WHERE username LIKE '{$username}' LIMIT 1";
+    $sql = "SELECT * from members WHERE username LIKE :username LIMIT 1";
     $query = $db->prepare($sql);
-    $query->execute();
+    $query->execute(['username' => $username]);
     $result = $query->fetch(PDO::FETCH_ASSOC);
     if (!isset($result['id'])) {
         echo "<p>Invalid username</p>";
@@ -57,7 +57,6 @@ if (isset($_POST['submit'])){
 
         } else {
             echo "<p>Invalid password</p>";
-            echo "<p><a href='login.php'>Retry</a></p>";
         }
     }
 }

@@ -23,9 +23,9 @@ if (isset($_SESSION['username'])) {
     return '';
 }
 
-$usernameErr = $passwordErr = '';
+$usernameErr = $passwordErr = $typeErr = '';
 
-$username = $password = '';
+$username = $password = $type = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
 
@@ -41,6 +41,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
         $password = input($_POST['password']);
     }
 
+    if (!isset($_POST['type'])) {
+        $typeErr = 'Please select an account type';
+    } else {
+        $type = input($_POST['type']);
+    }
+
 }
 
 ?>
@@ -50,7 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
     <span>* <?php echo $usernameErr;?></span><br/>
     <label for="password">Password:</label> <input type="password" name="password" id="password" />
     <span>* <?php echo $passwordErr;?></span><br/>
-    <label for="type">Account type:</label> Visitor <input type="radio" name="type" id="type" value="visitor"> Car Park Owner <input type="radio" name="type" id="type" value="owner"> Administrator <input type="radio" name="type" id="type" value="admin"><br/>
+    <label for="type">Account type:</label> Visitor <input type="radio" name="type" id="type" value="visitor"> Car Park Owner <input type="radio" name="type" id="type" value="owner"> Administrator <input type="radio" name="type" id="type" value="admin">
+    <span>* <?php echo $typeErr;?></span><br/>
     <input type="submit" name="submit" value="Register" />
 </form>
 
@@ -69,9 +76,13 @@ if(strlen($_POST['password']) == 0) {
     return '';
 }
 
-$userCheck = "SELECT * from members WHERE username = '{$username}' LIMIT 1";
+if (!isset($_POST['type'])) {
+    return '';
+}
+
+$userCheck = "SELECT * from members WHERE username = :username LIMIT 1";
 $query = $db->prepare($userCheck);
-$query->execute();
+$query->execute(['username' => $username]);
 $result = $query->fetch(PDO::FETCH_ASSOC);
 
 if (isset($result['id'])) {
@@ -80,10 +91,11 @@ if (isset($result['id'])) {
 } else {
     $encrypt = password_hash($password, PASSWORD_BCRYPT);
 
-    $sql = "INSERT INTO members (username, password) VALUES ('{$username}', '{$encrypt}')";
+    $sql = "INSERT INTO members (username, password, type) VALUES ( :username , :encrypt , :type )";
     $query = $db->prepare($sql);
+    $check = $query->execute(['username' => $username, 'encrypt' => $encrypt, 'type' => $type]);
 
-    if ($query->execute()) {
+    if ($check === true) {
         $_SESSION['username'] = $username;
         header("Location: search.php");
     } else {

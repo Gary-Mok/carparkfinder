@@ -105,11 +105,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
         return '';
     }
 
-    $sql = "INSERT INTO car_parks (name, owner, location, postcode, vacancies) VALUES ('" . $name . "', '" . $owner . "', '" . $location . "', '" . $postcode . "', '" . $vacancies . "')";
+    $sql = "INSERT INTO car_parks (name, owner, location, postcode, vacancies) VALUES (:name, :owner, :location, :postcode, :vacancies)";
+    $query = $db->prepare($sql);
+    $result = $query->execute(['name' => $name, 'owner' => $owner, 'location' => $location, 'postcode' => $postcode, 'vacancies' => $vacancies]);
 
     $idCreate = '';
 
-    if ($db->query($sql) === true) {
+    if ($result === true) {
         $idCreate = $db->lastInsertId();
         echo 'New record created successfully'; //confirmation message if request passes
     } else {
@@ -118,18 +120,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
 
     echo '<p>Result:</p>';
 
-    $sqlCreate = 'SELECT * FROM car_parks WHERE id=' . $idCreate . '';
+    $sqlCreate = 'SELECT * FROM car_parks WHERE id=?';
+    $queryCreate = $db->prepare($sqlCreate);
+    $show = $queryCreate->execute([$idCreate]);
+    $result = $queryCreate->fetch(PDO::FETCH_ASSOC);
 
-    if (!$result = $db->query($sqlCreate)) {
+    if ($show === false) {
         var_dump($db->errorInfo()); //error message if query fails
     }
 
     echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
-    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-        echo '<tr><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td></tr>';
-        //database displayed in a table
-    }
+    echo '<tr><td>' . $result['id'] . '</td><td>' . $result['name'] . '</td><td>' . $result['owner'] . '</td><td>' . $result['location'] . '</td><td>' . $result['postcode'] . '</td><td>' . $result['vacancies'] . '</td></tr>';
+    //database displayed in a table
     echo '</table>';
 
     ?>

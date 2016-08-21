@@ -90,14 +90,16 @@ $elements = array(
         <?php
 
         $sql = 'SELECT * FROM car_parks';
+        $query = $db->prepare($sql);
+        $read = $query->execute();
 
-        if (!$result = $db->query($sql)) {
+        if ($read === false) {
             die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
         }
 
         echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
-        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td></tr>';
             //database displayed in a table
         }
