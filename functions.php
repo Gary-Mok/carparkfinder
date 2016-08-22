@@ -49,7 +49,7 @@ function generateElements(array $elements)
  *
  * @return string
  */
-function getCarparkSearchQuery(array $elements, array $requests, $db)
+function getCarparkSearchQuery(array $elements, array $requests)
 {
     $baseQuery = 'SELECT * FROM car_parks ';
     $searchTerms = array();
@@ -67,7 +67,7 @@ function getCarparkSearchQuery(array $elements, array $requests, $db)
             continue;
         }
 
-        $searchTerms[] = sprintf('%s LIKE "%%%s%%"', $elementName, mysqli_real_escape_string($db, $field));
+        $searchTerms[] = sprintf('%s LIKE "%%%s%%"', $elementName, $field);
     }
 
     if (count($searchTerms) === 0) {

@@ -122,9 +122,9 @@ $elements = array(
 
         $listString = implode(', ', $_POST['list']);
 
-        $sqlDelete = 'DELETE FROM car_parks WHERE id IN ( :listString )';
+        $sqlDelete = 'DELETE FROM car_parks WHERE id IN (' . $listString . ')';
         $queryDelete = $db->prepare($sqlDelete);
-        $delete = $queryDelete->execute(['listString' => $listString]);
+        $delete = $queryDelete->execute();
 
         if ($delete === false) {
             echo 'Error: ' . $sqlDelete . '<br>';
@@ -142,7 +142,11 @@ $elements = array(
 
     <?php if(isset($_POST['submit'])) {
 
-        if (!$result = $db->query($query = getCarparkSearchQuery($elements, $_REQUEST, $db))) {
+        $sql = getCarparkSearchQuery($elements, $_REQUEST);
+        $query = $db->prepare($sql);
+        $check = $query->execute();
+
+        if ($check === false) {
             die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
         }
 
@@ -152,7 +156,7 @@ $elements = array(
 
         echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
-        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td><td><input type="checkbox" class="checkBoxClass" id="Checkbox' . $row['id'] . '" name="list[]" value="' . $row['id'] . '"></td></tr>';
         }
 

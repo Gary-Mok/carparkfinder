@@ -120,12 +120,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
 
     echo '<p>Result:</p>';
 
-    $sqlCreate = 'SELECT * FROM car_parks WHERE id=?';
-    $queryCreate = $db->prepare($sqlCreate);
-    $show = $queryCreate->execute([$idCreate]);
-    $result = $queryCreate->fetch(PDO::FETCH_ASSOC);
+    $sql = 'SELECT * FROM car_parks WHERE id=?';
+    $query = $db->prepare($sql);
+    $check = $query->execute([$idCreate]);
+    $result = $query->fetch(PDO::FETCH_ASSOC);
 
-    if ($show === false) {
+    if ($check === false) {
         var_dump($db->errorInfo()); //error message if query fails
     }
 

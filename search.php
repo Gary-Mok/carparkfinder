@@ -65,13 +65,18 @@ if (!isset($_SESSION['username'])) {
     <div class="result">
         <h1>Result</h1>
         <?php
-        if (!$result = $db->query($query = getCarparkSearchQuery($elements, $_REQUEST, $db))) {
+
+        $sql = getCarparkSearchQuery($elements, $_REQUEST);
+        $query = $db->prepare($sql);
+        $check = $query->execute();
+
+        if ($check === false) {
             die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
         }
 
         echo '<table><tr><th>Name</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
-        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             echo '<tr><td>' . $row['name'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td></tr>';
         }
 
