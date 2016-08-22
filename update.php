@@ -21,6 +21,11 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
+if ($_SESSION['type'] == "visitor" || $_SESSION['type'] == "owner") {
+    echo 'You do not have the administrative right to view this page. Please return to the <a href="search.php">main page</a>.';
+    return '';
+}
+
 $elements = array(
     'id' => array(
         'description' => 'ID No.',

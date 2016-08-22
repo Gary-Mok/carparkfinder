@@ -52,6 +52,7 @@ if (isset($_POST['submit'])){
 
         if (password_verify($password, $crypt)) {
 
+            $_SESSION['type'] = $result['type'];
             $_SESSION['username'] = $username;
             header("Location: search.php");
 

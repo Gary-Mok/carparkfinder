@@ -24,6 +24,11 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
+if ($_SESSION['type'] == "visitor" || $_SESSION['type'] == "owner") {
+    echo 'You do not have the administrative right to view this page. Please return to the <a href="search.php">main page</a>.';
+    return '';
+}
+
 $elements = array(
     'id' => array(
         'description' => 'ID No.',
@@ -172,8 +177,10 @@ $elements = array(
 
         $listString = implode(', ', $_POST['list']);
         $sqlDelete = 'DELETE FROM car_parks WHERE id IN (' . $listString . ')';
+        $queryDelete = $db->prepare($sqlDelete);
+        $delete = $queryDelete->execute();
 
-        if ($db->query($sqlDelete) === false) {
+        if ($delete === false) {
             echo 'Error: ' . $sql . '<br>' . $db->errorInfo(); //error message if request fails
             return;
         }

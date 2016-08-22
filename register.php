@@ -96,6 +96,7 @@ if (isset($result['id'])) {
     $check = $query->execute(['username' => $username, 'encrypt' => $encrypt, 'type' => $type]);
 
     if ($check === true) {
+        $_SESSION['type'] = $type;
         $_SESSION['username'] = $username;
         header("Location: search.php");
     } else {
