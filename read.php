@@ -14,15 +14,17 @@
 
 <?php
 
-session_start();
+include 'bootstrap.php';
 
-if (!isset($_SESSION['username']))
-{
+if (!isset($_SESSION['username'])) {
     header("Location: search.php");
-    die();
+    exit();
 }
 
-include 'bootstrap.php';
+if ($_SESSION['type'] == "visitor") {
+    echo 'You do not have the administrative right to view this page. Please return to the <a href="search.php">main page</a>.';
+    return '';
+}
 
 $elements = array(
     'id' => array(
@@ -93,14 +95,16 @@ $elements = array(
         <?php
 
         $sql = 'SELECT * FROM car_parks';
+        $query = $db->prepare($sql);
+        $read = $query->execute();
 
-        if (!$result = $db->query($sql)) {
-            die('There was an error running the query [' . $db->error . ']'); //error message if query fails
+        if ($read === false) {
+            die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
         }
 
         echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
-        while ($row = $result->fetch_assoc()) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td></tr>';
             //database displayed in a table
         }
@@ -116,13 +120,18 @@ $elements = array(
 
     <div>
         <?php
-        if (!$result = $db->query($query = getCarparkSearchQuery($elements, $_REQUEST, $db))) {
-            die('There was an error running the query [' . $db->error . ']'); //error message if query fails
+
+        $sql = getCarparkSearchQuery($elements, $_REQUEST);
+        $query = $db->prepare($sql);
+        $check = $query->execute();
+
+        if ($check === false) {
+            die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
         }
 
         echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
-        while ($row = $result->fetch_array()) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td></tr>';
         }
 

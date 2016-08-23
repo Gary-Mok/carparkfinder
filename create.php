@@ -14,15 +14,17 @@
 
 <?php
 
-session_start();
+include 'bootstrap.php';
 
-if (!isset($_SESSION['username']))
-{
+if (!isset($_SESSION['username'])) {
     header("Location: search.php");
-    die();
+    exit();
 }
 
-include 'bootstrap.php'; //imports functions from functions.php
+if ($_SESSION['type'] == "visitor" || $_SESSION['type'] == "owner") {
+    echo 'You do not have the administrative right to view this page. Please return to the <a href="search.php">main page</a>.';
+    return '';
+}
 
 $nameErr = $ownerErr = ''; //defines empty strings
 
@@ -108,31 +110,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
         return '';
     }
 
-    $sql = "INSERT INTO car_parks (name, owner, location, postcode, vacancies) VALUES ('" . $name . "', '" . $owner . "', '" . $location . "', '" . $postcode . "', '" . $vacancies . "')";
+    $sql = "INSERT INTO car_parks (name, owner, location, postcode, vacancies) VALUES (:name, :owner, :location, :postcode, :vacancies)";
+    $query = $db->prepare($sql);
+    $result = $query->execute(['name' => $name, 'owner' => $owner, 'location' => $location, 'postcode' => $postcode, 'vacancies' => $vacancies]);
 
     $idCreate = '';
 
-    if ($db->query($sql) === true) {
-        $idCreate = $db->insert_id;
+    if ($result === true) {
+        $idCreate = $db->lastInsertId();
         echo 'New record created successfully'; //confirmation message if request passes
     } else {
-        echo 'Error: ' . $sql . '<br>' . $db->error; //error message if request fails
+        var_dump($db->errorInfo()); //error message if request fails
     }
 
     echo '<p>Result:</p>';
 
-    $sqlCreate = 'SELECT * FROM car_parks WHERE id=' . $idCreate . '';
+    $sql = 'SELECT * FROM car_parks WHERE id=?';
+    $query = $db->prepare($sql);
+    $check = $query->execute([$idCreate]);
+    $result = $query->fetch(PDO::FETCH_ASSOC);
 
-    if (!$result = $db->query($sqlCreate)) {
-        die('There was an error running the query [' . $db->error . ']'); //error message if query fails
+    if ($check === false) {
+        var_dump($db->errorInfo()); //error message if query fails
     }
 
     echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
 
-    while ($row = $result->fetch_assoc()) {
-        echo '<tr><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td></tr>';
-        //database displayed in a table
-    }
+    echo '<tr><td>' . $result['id'] . '</td><td>' . $result['name'] . '</td><td>' . $result['owner'] . '</td><td>' . $result['location'] . '</td><td>' . $result['postcode'] . '</td><td>' . $result['vacancies'] . '</td></tr>';
+    //database displayed in a table
     echo '</table>';
 
     ?>
