@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
         $idCreate = $db->lastInsertId();
         echo 'New record created successfully'; //confirmation message if request passes
     } else {
-        var_dump($db->errorInfo()); //error message if request fails
+        $db->errorInfo(); //error message if request fails
     }
 
     echo '<p>Result:</p>';
@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
     $result = $query->fetch(PDO::FETCH_ASSOC);
 
     if ($check === false) {
-        var_dump($db->errorInfo()); //error message if query fails
+        $db->errorInfo(); //error message if query fails
     }
 
     echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';

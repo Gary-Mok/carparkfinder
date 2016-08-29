@@ -12,8 +12,6 @@
 
 <body>
 
-<h1>Register a new user</h1>
-
 <?php
 
 include 'bootstrap.php';
@@ -50,6 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
 }
 
 ?>
+
+<h1>Register a new user</h1>
 
 <form action="<?=$_SERVER['PHP_SELF']?>" method="post">
     <label for="username">Username:</label> <input type="text" name="username" id="username" />

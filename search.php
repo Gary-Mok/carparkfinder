@@ -51,6 +51,10 @@ if (!isset($_SESSION['username'])) {
     echo '<div><p><a href="login.php">Log in</a> or <a href="register.php">register</a></p></div>';
 } else {
     include 'navigation.php';
+
+    if ($_SESSION['type'] !== "admin") {
+        echo '<p><a href="requests.php">Make a request</a></p>';
+    }
 }
 ?>
 

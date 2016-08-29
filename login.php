@@ -12,8 +12,6 @@
 
 <body>
 
-<h1>Log in</h1>
-
 <?php
 
 include 'bootstrap.php';
@@ -24,6 +22,8 @@ if (isset($_SESSION['username'])) {
 }
 
 ?>
+
+<h1>Log in</h1>
 
 <form action="<?=$_SERVER['PHP_SELF']?>" method="post">
     <label for="username">Username:</label> <input type="text" name="username" id="username" />
