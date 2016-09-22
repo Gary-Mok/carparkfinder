@@ -44,11 +44,35 @@ if ($_SESSION['type'] == "visitor") {
 
 <div>
 
+    <p>Your current credit is:</p>
+
     <?php
 
     $id = $_SESSION['id'];
 
-    $sql = 'SELECT * FROM transactions WHERE member_id LIKE :id';
+    $sql = 'SELECT transactions.credit FROM transactions WHERE member_id LIKE :id AND id = MAX(id)';
+    $query = $db->prepare($sql);
+    $credit = $query->execute(['id' => $id]);
+
+    if ($credit === false) {
+        die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
+    }
+
+    $row = $query->fetch(PDO::FETCH_ASSOC);
+
+    echo $row['credit'];
+
+    ?>
+
+</div>
+
+<div>
+
+    <?php
+
+    $id = $_SESSION['id'];
+
+    $sql = 'SELECT transaction_type.description, transactions.credit, transactions.create_at FROM transactions INNER JOIN transaction_type ON transactions.transaction_type_id=transaction_type.id WHERE member_id LIKE :id ';
     $query = $db->prepare($sql);
     $trans = $query->execute(['id' => $id]);
 
@@ -56,10 +80,10 @@ if ($_SESSION['type'] == "visitor") {
         die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
     }
 
-    echo '<table><tr><th>Transaction Type ID</th><th>Credit</th><th>Date</th></tr>';
+    echo '<table><tr><th>Transaction</th><th>Credit</th><th>Date</th></tr>';
 
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-        echo '<tr class="tableContents"><td>' . $row['transaction_type_id'] . '</td><td>' . $row['credit'] . '</td><td>' . $row['create_at'] . '</td></tr>';
+        echo '<tr class="tableContents"><td>' . $row['description'] . '</td><td>' . $row['credit'] . '</td><td>' . $row['create_at'] . '</td></tr>';
         //database displayed in a table
     }
     echo '</table>';

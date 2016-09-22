@@ -46,7 +46,7 @@ if ($_SESSION['type'] !== "admin") {
 
     <?php
 
-    $sql = 'SELECT * FROM transactions';
+    $sql = 'SELECT transactions.id, members.username, transaction_type.description, transactions.credit, transactions.create_at FROM transactions INNER JOIN members ON transactions.member_id=members.id INNER JOIN transaction_type ON transactions.transaction_type_id=transaction_type.id';
     $query = $db->prepare($sql);
     $trans = $query->execute();
 
@@ -54,11 +54,10 @@ if ($_SESSION['type'] !== "admin") {
         die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
     }
 
-    echo '<table><tr><th>ID</th><th>Member ID</th><th>Transaction Type ID</th><th>Credit</th><th>Date</th></tr>';
+    echo '<table><tr><th>ID</th><th>Member</th><th>Transaction</th><th>Credit</th><th>Date</th></tr>';
 
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-        echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['member_id'] . '</td><td>' . $row['transaction_type_id'] . '</td><td>' . $row['credit'] . '</td><td>' . $row['create_at'] . '</td></tr>';
-        //database displayed in a table
+        echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['username'] . '</td><td>' . $row['description'] . '</td><td>' . $row['credit'] . '</td><td>' . $row['create_at'] . '</td></tr>';
     }
     echo '</table>';
 
