@@ -44,13 +44,13 @@ if ($_SESSION['type'] == "visitor") {
 
 <div>
 
-    <p>Your current credit is:</p>
+    <p>Your current credit is:
 
     <?php
 
     $id = $_SESSION['id'];
 
-    $sql = 'SELECT transactions.credit FROM transactions WHERE member_id LIKE :id AND id = MAX(id)';
+    $sql = 'SELECT transactions.credit FROM transactions WHERE member_id = :id AND id = (SELECT MAX(id) FROM transactions WHERE member_id = :id)';
     $query = $db->prepare($sql);
     $credit = $query->execute(['id' => $id]);
 
@@ -64,6 +64,10 @@ if ($_SESSION['type'] == "visitor") {
 
     ?>
 
+    </p>
+
+    <p>Add credit</p>
+
 </div>
 
 <div>
@@ -72,7 +76,7 @@ if ($_SESSION['type'] == "visitor") {
 
     $id = $_SESSION['id'];
 
-    $sql = 'SELECT transaction_type.description, transactions.credit, transactions.create_at FROM transactions INNER JOIN transaction_type ON transactions.transaction_type_id=transaction_type.id WHERE member_id LIKE :id ';
+    $sql = 'SELECT transaction_type.description, transactions.credit, transactions.create_at FROM transactions INNER JOIN transaction_type ON transactions.transaction_type_id=transaction_type.id WHERE member_id LIKE :id ORDER BY transactions.create_at ASC';
     $query = $db->prepare($sql);
     $trans = $query->execute(['id' => $id]);
 

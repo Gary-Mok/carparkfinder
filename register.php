@@ -98,10 +98,30 @@ if (isset($result['id'])) {
     if ($check === true) {
         $_SESSION['type'] = $type;
         $_SESSION['username'] = $username;
-        header("Location: search.php");
     } else {
         echo "<p>MySQL error no {$db->errorCode()} : {$db->errorInfo()}</p>";
-        exit();
+        return;
+    }
+
+    if ($type != 'visitor') {
+        $sql = "SELECT members.id from members WHERE username LIKE :username LIMIT 1";
+        $query = $db->prepare($sql);
+        $query->execute(['username' => $username]);
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+
+        $sql = "INSERT INTO transactions (member_id, transaction_type_id, credit, create_at) VALUES ( :id , 1 , 40 , NOW() )";
+        $query = $db->prepare($sql);
+        $check = $query->execute(['id' => $result['id']]);
+
+        if ($check === true) {
+            $_SESSION['id'] = $result['id'];
+            header("Location: search.php");
+        } else {
+            echo "<p>MySQL error no {$db->errorCode()} : {$db->errorInfo()}</p>";
+            return;
+        }
+    } else {
+        header("Location: search.php");
     }
 }
 ?>

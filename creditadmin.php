@@ -46,7 +46,7 @@ if ($_SESSION['type'] !== "admin") {
 
     <?php
 
-    $sql = 'SELECT transactions.id, members.username, transaction_type.description, transactions.credit, transactions.create_at FROM transactions INNER JOIN members ON transactions.member_id=members.id INNER JOIN transaction_type ON transactions.transaction_type_id=transaction_type.id';
+    $sql = 'SELECT transactions.id, members.username, transaction_type.description, transactions.credit, transactions.create_at FROM transactions INNER JOIN members ON transactions.member_id=members.id INNER JOIN transaction_type ON transactions.transaction_type_id=transaction_type.id ORDER BY transactions.id ASC';
     $query = $db->prepare($sql);
     $trans = $query->execute();
 
