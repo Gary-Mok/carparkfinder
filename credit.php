@@ -1,8 +1,7 @@
 <html>
 
 <head>
-    <link type='text/css' rel='stylesheet' href='/style/backend.css' />
-
+    <link type='text/css' rel='stylesheet' href='/style/backend.css'/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <title>
@@ -21,17 +20,16 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
-if ($_SESSION['type'] == "visitor") {
+if (isset($_SESSION['type']) && $_SESSION['type'] === "visitor") {
     echo 'You do not have the administrative right to view this page. Please return to the <a href="search.php">main page</a>.';
+
     return '';
 }
 
 ?>
 
 <div>
-
     <h1>Car Park Finder</h1>
-
 </div>
 
 <?php include 'navigation.php' ?>
@@ -56,51 +54,40 @@ if ($_SESSION['type'] == "visitor") {
 
     $id = $_SESSION['id'];
 
-    $sql = 'SELECT transactions.create_at, transaction_type.description, transactions.credit FROM transactions INNER JOIN transaction_type ON transactions.transaction_type_id=transaction_type.id WHERE member_id = :id';
+    $sql = 'SELECT transactions.create_at, transaction_type.description, transactions.credit 
+FROM transactions 
+INNER JOIN transaction_type ON transactions.transaction_type_id=transaction_type.id 
+WHERE member_id = :id';
+
     $query = $db->prepare($sql);
     $credit = $query->execute(['id' => $id]);
 
-    if ($credit === false) {
+    if (false === $credit) {
         die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
     }
 
-    $dateEntries = array();
+    $runningTotal = 0;
+    $entries = array();
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        $runningTotal += $row['credit'];
+        $entry = array();
+        $entry['transactionDescription'] = $row['description'];
+        $entry['debit'] = $row['credit'] < 0 ? abs($row['credit']) : 0;
+        $entry['credit'] = $row['credit'] > 0 ? abs($row['credit']) : 0;
+        $entry['runningTotal'] = $runningTotal;
 
-    $descriptionEntries = array();
-
-    $creditEntries = array();
-
-    while ($Columns = $query->fetch(PDO::FETCH_ASSOC)) {
-        array_push($dateEntries, $Columns['create_at']);
-        array_push($descriptionEntries, $Columns['description']);
-        array_push($creditEntries, $Columns['credit']);
+        $entries[] = $entry;
     }
 
-    $runningTotal = 0;
+    echo '<table><tr><th>Transaction Description</th><th>Debit</th><th>Credit</th><th>Running Total</th></tr>';
 
-    echo '<table><tr><th>Debit</th><th>Credit</th><th>Running Total</th></tr>';
-
-    foreach($creditEntries as $entry) {
-        $row = array();
-        if($entry < 0) {
-            $row['debit'] = abs($entry);
-            $row['credit'] = 0;
-        }
-        if($entry > 0) {
-            $row['debit'] = 0;
-            $row['credit'] = abs($entry);
-        }
-        $runningTotal = $runningTotal - $row['debit'] + $row['credit'];
-        $row['runningTotal'] = $runningTotal;
-        echo '<tr><td>' . implode('</td><td>', $row) . '</td></tr>';
+    foreach ($entries as $entry) {
+        echo '<tr><td>' . implode('</td><td>', $entry) . '</td></tr>';
     }
 
     echo '</table>';
 
     ?>
-
 </div>
-
 </body>
-
 </html>
