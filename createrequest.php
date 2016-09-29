@@ -102,12 +102,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['createRequest'])) {
         <label for="vacancies">Vacancies:</label> <input type="text" name="vacancies" id="vacancies">
         <br><br>
         <label for="payment">Payment type:</label>
-        Type 1 (10 credits) <input type="radio" name="payment" id="payment" value="2">
-        Type 2 (20 credits) <input type="radio" name="payment" id="payment" value="3">
-        Type 3 (30 credits) <input type="radio" name="payment" id="payment" value="4">
-        Type 4 (40 credits) <input type="radio" name="payment" id="payment" value="5">
-        Type 5 (50 credits) <input type="radio" name="payment" id="payment" value="6">
         <span>* <?php echo $paymentErr;?></span><br/>
+        <?php
+
+        $sql = 'SELECT * FROM transaction_type WHERE id BETWEEN :idStart AND :idEnd';
+        $query = $db->prepare($sql);
+        $check = $query->execute(['idStart' => 2, 'idEnd' => 6]);
+
+        if (false === $check) {
+            die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
+        }
+
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            echo $row['description'] . ' (' . abs($row['credit']) . ' credits) <input type="radio" name="payment" id="payment" value="' . $row['id'] . '"><br/>';
+        }
+
+        ?>
+        <br/>
         <input type="submit" name="createRequest" value="Submit">
     </form>
 

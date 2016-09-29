@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
 <div>
 
     <form action="<?=$_SERVER['PHP_SELF']?>" method="post">
-        <label for="credit">Add credit:</label> <input type="text" name="credit" id="credit" />
+        <label for="credit">Add credit:</label> <input type="text" name="credit" id="credit" /><br/>
         <span>* <?php echo $creditErr;?></span><br/>
         <input type="submit" name="submit" value="Submit" />
     </form>
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
 
 <?php
 
-if (!isset($_POST['submit'])) { //following only occurs if user is creating a record
+if (!isset($_POST['submit'])) {
     return '';
 }
 

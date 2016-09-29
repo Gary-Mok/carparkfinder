@@ -109,7 +109,7 @@ if (isset($result['id'])) {
         $query->execute(['username' => $username]);
         $result = $query->fetch(PDO::FETCH_ASSOC);
 
-        $sql = "INSERT INTO transactions (member_id, transaction_type_id, credit, create_at) VALUES ( :id , 1 , 40 , NOW() )";
+        $sql = "INSERT INTO transactions (member_id, transaction_type_id, credit, create_at) VALUES ( :id , 1 , 0 , NOW() )";
         $query = $db->prepare($sql);
         $check = $query->execute(['id' => $result['id']]);
 
