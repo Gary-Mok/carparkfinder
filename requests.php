@@ -8,8 +8,6 @@
 
 <body>
 
-<h1>Requests</h1>
-
 <?php
 
 include 'bootstrap.php';
@@ -19,13 +17,24 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
+?>
+
+<h1>Requests</h1>
+
+<?php
+
+include 'navigation.php';
+
 if ($_SESSION['type'] == "owner") {
     echo '<p><a href="createrequest.php">Add request</a></p>';
+    echo '<p>Edit request</p>';
+    echo '<p>Delete request</p>';
+} else {
+    echo 'You do not have the administrative right to view this page. Please return to the <a href="search.php">main page</a>.';
+    return '';
 }
 
 ?>
-
-<p><a href="search.php">Back</a></p>
 
 </body>
 

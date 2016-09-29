@@ -22,9 +22,9 @@ if ($_SESSION['type'] !== "owner") {
     exit();
 }
 
-$emailErr = $nameErr = $ownerErr = '';
+$emailErr = $nameErr = $ownerErr = $paymentErr = '';
 
-$email = $name = $owner = $location = $postcode = $vacancies = '';
+$email = $name = $owner = $location = $postcode = $vacancies = $payment = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['createRequest'])) {
 
@@ -56,6 +56,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['createRequest'])) {
 
     if (strlen($_POST['vacancies']) !== 0) {
         $vacancies = input($_POST['vacancies']);
+    }
+
+    if (!isset($_POST['payment'])) {
+        $paymentErr = 'Payment type is required';
+    } else {
+        $payment = input($_POST['payment']);
     }
 }
 
@@ -95,6 +101,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['createRequest'])) {
         <br><br>
         <label for="vacancies">Vacancies:</label> <input type="text" name="vacancies" id="vacancies">
         <br><br>
+        <label for="payment">Payment type:</label>
+        Type 1 (10 credits) <input type="radio" name="payment" id="payment" value="2">
+        Type 2 (20 credits) <input type="radio" name="payment" id="payment" value="3">
+        Type 3 (30 credits) <input type="radio" name="payment" id="payment" value="4">
+        Type 4 (40 credits) <input type="radio" name="payment" id="payment" value="5">
+        Type 5 (50 credits) <input type="radio" name="payment" id="payment" value="6">
+        <span>* <?php echo $paymentErr;?></span><br/>
         <input type="submit" name="createRequest" value="Submit">
     </form>
 
@@ -118,6 +131,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['createRequest'])) {
         return '';
     }
 
+    if (!isset($_POST['payment'])) {
+        return '';
+    }
+
+    $sql = 'SELECT SUM(credit) FROM transactions WHERE member_id = :id';
+    $query = $db->prepare($sql);
+    $check = $query->execute(['id' => $_SESSION['id']]);
+
+    if (false === $check) {
+        die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
+    }
+
+    $creditAmount = $query->fetch(PDO::FETCH_ASSOC);
+
+    $sql = 'SELECT credit FROM transaction_type WHERE id = :type_id';
+    $query = $db->prepare($sql);
+    $check = $query->execute(['type_id' => $payment]);
+
+    if (false === $check) {
+        die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
+    }
+
+    $paymentAmount = $query->fetch(PDO::FETCH_ASSOC);
+
+    if (abs($paymentAmount['credit']) > $creditAmount['SUM(credit)']) {
+        echo 'Insufficient credit! <a href="addcredit.php">Please add more credit</a>.';
+        return '';
+    }
+
     $sql = "INSERT INTO car_parks (name, owner, location, postcode, vacancies) VALUES (:name, :owner, :location, :postcode, :vacancies)";
     $query = $db->prepare($sql);
     $result = $query->execute(['name' => $name, 'owner' => $owner, 'location' => $location, 'postcode' => $postcode, 'vacancies' => $vacancies]);
@@ -132,6 +174,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['createRequest'])) {
         echo 'Request successfully submitted, please check your e-mail!';
     } else {
         $db->errorInfo();
+    }
+
+    $sql = 'INSERT INTO transactions (member_id, transaction_type_id, credit, create_at) VALUES ( :id , :type_id , :payment , NOW() )';
+    $query = $db->prepare($sql);
+    $check = $query->execute(['id' => $_SESSION['id'], 'type_id' => $payment, 'payment' => $paymentAmount['credit']]);
+
+    if (false === $check) {
+        die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
     }
 
     ?>

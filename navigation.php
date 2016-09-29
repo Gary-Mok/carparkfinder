@@ -16,7 +16,7 @@ if ($_SESSION['type'] == "admin") {
 
     echo '<p>Welcome, ' . $_SESSION['username'] . '!</p>';
 
-    echo '<p><a href="search.php">Main page</a> | <a href="read.php">Read</a> | <a href="credit.php">Transactions</a> | <a href="logout.php">Log out</a></p>';
+    echo '<p><a href="search.php">Main page</a> | <a href="requests.php">Requests</a> | <a href="read.php">Read</a> | <a href="credit.php">Transactions</a> | <a href="logout.php">Log out</a></p>';
 
     echo '</div>';
 
