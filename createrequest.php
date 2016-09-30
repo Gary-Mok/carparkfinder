@@ -105,9 +105,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['createRequest'])) {
         <span>* <?php echo $paymentErr;?></span><br/>
         <?php
 
-        $sql = 'SELECT * FROM transaction_type WHERE id BETWEEN :idStart AND :idEnd';
+        $ids = array(2,3,4,5,6);
+        $inQuery = implode(',', array_fill(0, count($ids), '?'));
+        $sql = 'SELECT * FROM transaction_type WHERE id IN(' . $inQuery . ')';
         $query = $db->prepare($sql);
-        $check = $query->execute(['idStart' => 2, 'idEnd' => 6]);
+        foreach ($ids as $k => $id) {
+            $query->bindValue(($k+1), $id);
+        }
+        $check = $query->execute();
 
         if (false === $check) {
             die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
