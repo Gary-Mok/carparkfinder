@@ -76,3 +76,7 @@ function getCarparkSearchQuery(array $elements, array $requests)
 
     return $baseQuery . ' WHERE ' . implode(' OR ', $searchTerms);
 }
+
+function isInteger($input){
+    return(ctype_digit(strval($input)));
+}
