@@ -176,9 +176,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['createRequest'])) {
         return '';
     }
 
-    $sql = "INSERT INTO car_parks (name, owner, location, postcode, vacancies) VALUES (:name, :owner, :location, :postcode, :vacancies)";
+    $sql = "INSERT INTO holding (member_id, holding_type_id, name, owner, location, postcode, vacancies, credit) VALUES (:member_id, 1, :name, :owner, :location, :postcode, :vacancies, :credit)";
     $query = $db->prepare($sql);
-    $result = $query->execute(['name' => $name, 'owner' => $owner, 'location' => $location, 'postcode' => $postcode, 'vacancies' => $vacancies]);
+    $result = $query->execute(['member_id' => $_SESSION['id'], 'name' => $name, 'owner' => $owner, 'location' => $location, 'postcode' => $postcode, 'vacancies' => $vacancies, 'credit' => $paymentAmount['credit']]);
 
     $msg = "Dear Sir or Madam,\nThank you for considering our services. This is the car park you registered:\nCar Park:" . $name . "\nOwner:" . $owner . "\nLocation:" . $location . "\nPostcode:" . $postcode . "\nVacancies:" . $vacancies . "\nHere are the following charges:\n. Monthly charge\n. Annual charge\n. Special package\n Select your preferred payment method.\nYours faithfully,\nCar Park Finder";
 
@@ -190,14 +190,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['createRequest'])) {
         echo 'Request successfully submitted, please check your e-mail!';
     } else {
         $db->errorInfo();
-    }
-
-    $sql = 'INSERT INTO transactions (member_id, transaction_type_id, credit, create_at) VALUES ( :id , :type_id , :payment , NOW() )';
-    $query = $db->prepare($sql);
-    $check = $query->execute(['id' => $_SESSION['id'], 'type_id' => $payment, 'payment' => $paymentAmount['credit']]);
-
-    if (false === $check) {
-        die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
     }
 
     ?>

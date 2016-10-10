@@ -35,11 +35,19 @@ CREATE TABLE `transaction_type` (
 
 CREATE TABLE `holding` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` varchar(6) COLLATE utf8_unicode_ci NOT NULL,
+  `member_id` int(11) NOT NULL,
+  `holding_type_id` int(11) NOT NULL,
   `name` varchar(120) COLLATE utf8_unicode_ci NOT NULL,
   `owner` varchar(120) COLLATE utf8_unicode_ci NOT NULL,
   `location` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
   `postcode` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
   `vacancies` int(11) DEFAULT NULL,
+  `credit` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+
+CREATE TABLE `holding_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
