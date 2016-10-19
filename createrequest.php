@@ -176,9 +176,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['createRequest'])) {
         return '';
     }
 
-    $sql = "INSERT INTO holding (member_id, holding_type_id, name, owner, location, postcode, vacancies, credit) VALUES (:member_id, 1, :name, :owner, :location, :postcode, :vacancies, :credit)";
+    $sql = "INSERT INTO holding (member_id, holding_type_id, name, owner, location, postcode, vacancies, credit, transaction_type_id) VALUES (:member_id, 1, :name, :owner, :location, :postcode, :vacancies, :credit, :type)";
     $query = $db->prepare($sql);
-    $result = $query->execute(['member_id' => $_SESSION['id'], 'name' => $name, 'owner' => $owner, 'location' => $location, 'postcode' => $postcode, 'vacancies' => $vacancies, 'credit' => $paymentAmount['credit']]);
+    $result = $query->execute(['member_id' => $_SESSION['id'], 'name' => $name, 'owner' => $owner, 'location' => $location, 'postcode' => $postcode, 'vacancies' => $vacancies, 'credit' => $paymentAmount['credit'], 'type' => $payment]);
 
     $msg = "Dear Sir or Madam,\nThank you for considering our services. This is the car park you registered:\nCar Park:" . $name . "\nOwner:" . $owner . "\nLocation:" . $location . "\nPostcode:" . $postcode . "\nVacancies:" . $vacancies . "\nHere are the following charges:\n. Monthly charge\n. Annual charge\n. Special package\n Select your preferred payment method.\nYours faithfully,\nCar Park Finder";
 
