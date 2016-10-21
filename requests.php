@@ -27,7 +27,7 @@ include 'navigation.php';
 
 if ($_SESSION['type'] == "owner") {
     echo '<p><a href="createrequest.php">Add request</a></p>';
-    echo '<p>Edit request</p>';
+    echo '<p><a href="updaterequest.php">Edit request</a></p>';
     echo '<p>Delete request</p>';
 } else {
     echo 'You do not have the administrative right to view this page. Please return to the <a href="search.php">main page</a>.';

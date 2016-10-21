@@ -45,7 +45,11 @@ if ($_SESSION['type'] !== "admin") {
 
     <?php
 
-    $sql = 'SELECT holding.id, members.username, holding_type.type, holding.name, holding.owner, holding.location, holding.postcode, holding.vacancies, holding.credit, transaction_type.description FROM holding INNER JOIN members ON holding.member_id=members.id INNER JOIN holding_type ON holding.holding_type_id=holding_type.id INNER JOIN transaction_type ON holding.transaction_type_id=transaction_type.id ORDER BY holding.id ASC';
+    $sql = 'SELECT holding.id, members.username, holding_type.type, holding.name, holding.owner, holding.location, holding.postcode, holding.vacancies, holding.credit, transaction_type.description, holding.update_id FROM holding
+            INNER JOIN members ON holding.member_id=members.id
+            INNER JOIN holding_type ON holding.holding_type_id=holding_type.id
+            INNER JOIN transaction_type ON holding.transaction_type_id=transaction_type.id
+            ORDER BY holding.id ASC';
     $query = $db->prepare($sql);
     $check = $query->execute();
 
@@ -57,10 +61,35 @@ if ($_SESSION['type'] !== "admin") {
 
     echo '<strong>Select all</strong> <input type="checkbox" id="ckbCheckAll" name="all" value="">';
 
-    echo '<table><tr><th>ID</th><th>Member</th><th>Request Type</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th><th>Request Cost</th><th>Transaction Type</th></tr>';
+    echo '<table><tr>
+                    <th>ID</th>
+                    <th>Member</th>
+                    <th>Request Type</th>
+                    <th>Name</th>
+                    <th>Owner</th>
+                    <th>Location</th>
+                    <th>Postcode</th>
+                    <th>Vacancies</th>
+                    <th>Request Cost</th>
+                    <th>Transaction Type</th>
+                    <th>ID of Updated Car Park</th>
+                 </tr>';
 
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-        echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['username'] . '</td><td>' . $row['type'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td><td>' . $row['credit'] . '</td><td>' . $row['description'] . '</td><td><input type="checkbox" class="checkBoxClass" id="Checkbox' . $row['id'] . '" name="list[]" value="' . $row['id'] . '"></td></tr>';
+        echo '<tr class="tableContents">
+                <td>' . $row['id'] . '</td>
+                <td>' . $row['username'] . '</td>
+                <td>' . $row['type'] . '</td>
+                <td>' . $row['name'] . '</td>
+                <td>' . $row['owner'] . '</td>
+                <td>' . $row['location'] . '</td>
+                <td>' . $row['postcode'] . '</td>
+                <td>' . $row['vacancies'] . '</td>
+                <td>' . $row['credit'] . '</td>
+                <td>' . $row['description'] . '</td>
+                <td>' . $row['update_id'] . '</td>
+                <td><input type="checkbox" class="checkBoxClass" id="Checkbox' . $row['id'] . '" name="list[]" value="' . $row['id'] . '"></td>
+              </tr>';
     }
 
     echo '</table><br/>';
@@ -78,7 +107,9 @@ if ($_SESSION['type'] !== "admin") {
     }
 
     foreach ($_POST['list'] as $request_id) {
-        $sql = 'SELECT holding.id, holding.member_id, holding_type.type, holding.name, holding.owner, holding.location, holding.postcode, holding.vacancies, holding.credit, holding.transaction_type_id FROM holding INNER JOIN holding_type ON holding.holding_type_id=holding_type.id WHERE holding.id = ' . $request_id;
+        $sql = 'SELECT holding.id, holding.member_id, holding_type.type, holding.name, holding.owner, holding.location, holding.postcode, holding.vacancies, holding.credit, holding.transaction_type_id FROM holding
+                INNER JOIN holding_type ON holding.holding_type_id=holding_type.id
+                WHERE holding.id = ' . $request_id;
         $query = $db->prepare($sql);
         $trans = $query->execute();
         $row = $query->fetch(PDO::FETCH_ASSOC);
@@ -88,7 +119,8 @@ if ($_SESSION['type'] !== "admin") {
         }
 
         if ($row['type'] = 'create') {
-            $sql = 'INSERT INTO car_parks (name, owner, location, postcode, vacancies) VALUES (:name, :owner, :location, :postcode, :vacancies)';
+            $sql = 'INSERT INTO car_parks (name, owner, location, postcode, vacancies)
+                    VALUES (:name, :owner, :location, :postcode, :vacancies)';
             $query = $db->prepare($sql);
             $check = $query->execute(['name' => $row['name'], 'owner' => $row['owner'], 'location' => $row['location'], 'postcode' => $row['postcode'], 'vacancies' => $row['vacancies']]);
 
@@ -96,7 +128,8 @@ if ($_SESSION['type'] !== "admin") {
                 die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
             }
 
-            $sql = 'INSERT INTO transactions (member_id, transaction_type_id, credit, create_at) VALUES ( :id , :type_id , :payment , NOW() )';
+            $sql = 'INSERT INTO transactions (member_id, transaction_type_id, credit, create_at)
+                    VALUES ( :id , :type_id , :payment , NOW() )';
             $query = $db->prepare($sql);
             $check = $query->execute(['id' => $row['member_id'], 'type_id' => $row['transaction_type_id'], 'payment' => $row['credit']]);
 

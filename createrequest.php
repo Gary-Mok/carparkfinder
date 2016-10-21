@@ -176,7 +176,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['createRequest'])) {
         return '';
     }
 
-    $sql = "INSERT INTO holding (member_id, holding_type_id, name, owner, location, postcode, vacancies, credit, transaction_type_id) VALUES (:member_id, 1, :name, :owner, :location, :postcode, :vacancies, :credit, :type)";
+    $sql = "INSERT INTO holding (member_id, holding_type_id, name, owner, location, postcode, vacancies, credit, transaction_type_id)
+            VALUES (:member_id, 1, :name, :owner, :location, :postcode, :vacancies, :credit, :type)";
     $query = $db->prepare($sql);
     $result = $query->execute(['member_id' => $_SESSION['id'], 'name' => $name, 'owner' => $owner, 'location' => $location, 'postcode' => $postcode, 'vacancies' => $vacancies, 'credit' => $paymentAmount['credit'], 'type' => $payment]);
 

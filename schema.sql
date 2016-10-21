@@ -5,6 +5,7 @@ CREATE TABLE `car_parks` (
   `location` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
   `postcode` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
   `vacancies` int(11) DEFAULT NULL,
+  `member_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -43,6 +44,8 @@ CREATE TABLE `holding` (
   `postcode` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
   `vacancies` int(11) DEFAULT NULL,
   `credit` int(11) DEFAULT NULL,
+  `transaction_type_id` int(11) DEFAULT '8',
+  `update_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 

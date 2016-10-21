@@ -26,9 +26,9 @@ if ($_SESSION['type'] == "visitor" || $_SESSION['type'] == "owner") {
     return '';
 }
 
-$nameErr = $ownerErr = ''; //defines empty strings
+$nameErr = $ownerErr = $memberErr = ''; //defines empty strings
 
-$name = $owner = $location = $postcode = $vacancies = ''; //defines empty strings
+$name = $owner = $location = $postcode = $vacancies = $member_id = ''; //defines empty strings
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
     //following only occurs if user is creating a record
@@ -55,6 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
 
     if (strlen($_POST['vacancies']) !== 0) {
         $vacancies = input($_POST['vacancies']); //set $vacancies to input
+    }
+
+    if (strlen($_POST['member']) == 0) {
+        $memberErr = 'Please assign a designated member';
+    } else {
+        $member_id = input($_POST['member']); //if input is empty, display error message, else set $member_id to input
     }
 }
 
@@ -93,6 +99,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
         <br><br>
         <label for="vacancies">Vacancies:</label> <input type="text" name="vacancies" id="vacancies"> <!--vacancies input-->
         <br><br>
+        <label for="member">User:</label>
+        <select name="member" id="member">
+            <option value=""></option>
+            <?php
+
+            $sql = 'SELECT members.id, members.username
+                    FROM members
+                    WHERE type="owner"
+                    ORDER BY members.id ASC';
+            $query = $db->prepare($sql);
+            $check = $query->execute();
+
+            if ($check === false) {
+                die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
+            }
+
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                echo '<option value="' . $row['id'] . '">' . $row['username'] . '</option>';
+            }
+
+            ?>
+        </select> <!--user input-->
+        <span>* <?php echo $memberErr;?></span> <!--display error if empty-->
+        <br><br>
         <input type="submit" name="create" value="Submit"> <!--create submit-->
     </form>
 
@@ -110,9 +140,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
         return '';
     }
 
-    $sql = "INSERT INTO car_parks (name, owner, location, postcode, vacancies) VALUES (:name, :owner, :location, :postcode, :vacancies)";
+    if(strlen($_POST['member']) == 0) {
+        return '';
+    }
+
+    $sql = "INSERT INTO car_parks (name, owner, location, postcode, vacancies, member_id)
+            VALUES (:name, :owner, :location, :postcode, :vacancies, :member)";
     $query = $db->prepare($sql);
-    $result = $query->execute(['name' => $name, 'owner' => $owner, 'location' => $location, 'postcode' => $postcode, 'vacancies' => $vacancies]);
+    $result = $query->execute(['name' => $name, 'owner' => $owner, 'location' => $location, 'postcode' => $postcode, 'vacancies' => $vacancies, 'member' => $member_id]);
 
     $idCreate = '';
 
@@ -125,18 +160,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
 
     echo '<p>Result:</p>';
 
-    $sql = 'SELECT * FROM car_parks WHERE id=?';
+    $sql = 'SELECT car_parks.id, car_parks.name, car_parks.owner, car_parks.location, car_parks.postcode, car_parks.vacancies, members.username
+            FROM car_parks
+            INNER JOIN members ON car_parks.member_id = members.id
+            WHERE car_parks.id= :id';
     $query = $db->prepare($sql);
-    $check = $query->execute([$idCreate]);
-    $result = $query->fetch(PDO::FETCH_ASSOC);
+    $check = $query->execute(['id' => $idCreate]);
+    $row = $query->fetch(PDO::FETCH_ASSOC);
 
     if ($check === false) {
         $db->errorInfo(); //error message if query fails
     }
 
-    echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
+    echo '<table><tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Owner</th>
+                    <th>Location</th>
+                    <th>Postcode</th>
+                    <th>Vacancies</th>
+                    <th>Member</th>
+                 </tr>';
 
-    echo '<tr><td>' . $result['id'] . '</td><td>' . $result['name'] . '</td><td>' . $result['owner'] . '</td><td>' . $result['location'] . '</td><td>' . $result['postcode'] . '</td><td>' . $result['vacancies'] . '</td></tr>';
+    echo '<tr>
+            <td>' . $row['id'] . '</td>
+            <td>' . $row['name'] . '</td>
+            <td>' . $row['owner'] . '</td>
+            <td>' . $row['location'] . '</td>
+            <td>' . $row['postcode'] . '</td>
+            <td>' . $row['vacancies'] . '</td>
+            <td>' . $row['username'] . '</td>
+          </tr>';
     //database displayed in a table
     echo '</table>';
 
