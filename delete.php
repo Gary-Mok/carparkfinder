@@ -30,7 +30,7 @@ if ($_SESSION['type'] == "visitor" || $_SESSION['type'] == "owner") {
 }
 
 $elements = array(
-    'id' => array(
+    'car_parks_period_id' => array(
         'description' => 'ID No.',
         'isRequired' => false,
         'type' => 'text',
@@ -59,6 +59,11 @@ $elements = array(
         'description' => 'Vacancies',
         'isRequired' => false,
         'type' => 'text',
+    ),
+    'member_id' => array(
+        'description' => 'Member',
+        'isRequired' => false,
+        'type' => 'select',
     ),
     'submit' => array(
         'description' => 'Search',
@@ -97,7 +102,9 @@ $elements = array(
 
     if(!isset($_POST['submit'])) {
 
-        $sql = 'SELECT * FROM car_parks';
+        $sql = 'SELECT car_parks.id, car_parks.name, car_parks.owner, car_parks.location, car_parks.postcode, car_parks.vacancies, members.username
+            FROM car_parks
+            INNER JOIN members ON car_parks.member_id = members.id';
         $query = $db->prepare($sql);
         $delete = $query->execute();
 
@@ -105,21 +112,46 @@ $elements = array(
             die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
         }
 
-        echo '<form method="post" id="delete">';
+        ?>
 
-        echo '<strong>Select all</strong> <input type="checkbox" id="ckbCheckAll" name="all" value="">';
+        <form method="post" id="delete">
 
-        echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
+            <strong><label for="ckbCheckAll">Select all</label></strong> <input type="checkbox" id="ckbCheckAll" name="all" value="">
 
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td><td><input type="checkbox" class="checkBoxClass" id="Checkbox' . $row['id'] . '" name="list[]" value="' . $row['id'] . '"></td></tr>';
-        }
+            <?php
 
-        echo '</table><br>';
+            echo '<table><tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Owner</th>
+                            <th>Location</th>
+                            <th>Postcode</th>
+                            <th>Vacancies</th>
+                            <th>Member</th>
+                         </tr>';
 
-        echo '<input type="button" name="delete" id="deleteButton" value="Delete">';
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                echo '<tr class="tableContents">
+                        <td>' . $row['id'] . '</td>
+                        <td>' . $row['name'] . '</td>
+                        <td>' . $row['owner'] . '</td>
+                        <td>' . $row['location'] . '</td>
+                        <td>' . $row['postcode'] . '</td>
+                        <td>' . $row['vacancies'] . '</td>
+                        <td>' . $row['username'] . '</td>
+                        <td><input type="checkbox" class="checkBoxClass" id="Checkbox' . $row['id'] . '" name="list[]" value="' . $row['id'] . '"></td>
+                      </tr>';
+            }
 
-        echo '</form>';
+            echo '</table><br>';
+
+            ?>
+
+            <input type="button" name="delete" id="deleteButton" value="Delete">
+
+        </form>
+
+        <?php
 
         if (empty($_POST['list'])) {
             return '';
@@ -145,7 +177,9 @@ $elements = array(
 
 <div>
 
-    <?php if(isset($_POST['submit'])) {
+    <?php
+
+    if(isset($_POST['submit'])) {
 
         $sql = getCarparkSearchQuery($elements, $_REQUEST);
         $query = $db->prepare($sql);
@@ -155,21 +189,46 @@ $elements = array(
             die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
         }
 
-        echo '<form method="post" id="delete">';
+        ?>
 
-        echo '<strong>Select all</strong> <input type="checkbox" id="ckbCheckAll" name="all" value="">';
+        <form method="post" id="delete">
 
-        echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
+            <strong><label for="ckbCheckAll">Select all</label></strong> <input type="checkbox" id="ckbCheckAll" name="all" value="">
 
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td><td><input type="checkbox" class="checkBoxClass" id="Checkbox' . $row['id'] . '" name="list[]" value="' . $row['id'] . '"></td></tr>';
-        }
+            <?php
 
-        echo '</table><br>';
+            echo '<table><tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Owner</th>
+                            <th>Location</th>
+                            <th>Postcode</th>
+                            <th>Vacancies</th>
+                            <th>Member</th>
+                         </tr>';
 
-        echo '<input type="button" name="delete" id="deleteButton" value="Delete">';
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                echo '<tr class="tableContents">
+                        <td>' . $row['id'] . '</td>
+                        <td>' . $row['name'] . '</td>
+                        <td>' . $row['owner'] . '</td>
+                        <td>' . $row['location'] . '</td>
+                        <td>' . $row['postcode'] . '</td>
+                        <td>' . $row['vacancies'] . '</td>
+                        <td>' . $row['username'] . '</td>
+                        <td><input type="checkbox" class="checkBoxClass" id="Checkbox' . $row['id'] . '" name="list[]" value="' . $row['id'] . '"></td>
+                      </tr>';
+            }
 
-        echo '</form>';
+            echo '</table><br>';
+
+            ?>
+
+            <input type="button" name="delete" id="deleteButton" value="Delete">
+
+        </form>
+
+        <?php
 
         if (empty($_POST['list'])) {
             return '';

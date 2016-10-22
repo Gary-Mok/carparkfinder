@@ -27,7 +27,7 @@ if ($_SESSION['type'] == "visitor" || $_SESSION['type'] == "owner") {
 }
 
 $elements = array(
-    'id' => array(
+    'car_parks_period_id' => array(
         'description' => 'ID No.',
         'isRequired' => false,
         'type' => 'text',
@@ -56,6 +56,11 @@ $elements = array(
         'description' => 'Vacancies',
         'isRequired' => false,
         'type' => 'text',
+    ),
+    'member_id' => array(
+        'description' => 'Member',
+        'isRequired' => false,
+        'type' => 'select',
     ),
     'submit' => array(
         'description' => 'Submit',
@@ -93,7 +98,9 @@ $elements = array(
     <div>
         <?php
 
-        $sql = 'SELECT * FROM car_parks';
+        $sql = 'SELECT car_parks.id, car_parks.name, car_parks.owner, car_parks.location, car_parks.postcode, car_parks.vacancies, members.username
+                FROM car_parks
+                INNER JOIN members ON car_parks.member_id = members.id';
         $query = $db->prepare($sql);
         $update = $query->execute();
 
@@ -107,10 +114,27 @@ $elements = array(
 
             <?php
 
-            echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
+            echo '<table><tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Owner</th>
+                            <th>Location</th>
+                            <th>Postcode</th>
+                            <th>Vacancies</th>
+                            <th>Member</th>
+                         </tr>';
 
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td><td><input type="radio" name="check" value="' . $row['id'] . '"></td></tr>';
+                echo '<tr class="tableContents">
+                        <td>' . $row['id'] . '</td>
+                        <td>' . $row['name'] . '</td>
+                        <td>' . $row['owner'] . '</td>
+                        <td>' . $row['location'] . '</td>
+                        <td>' . $row['postcode'] . '</td>
+                        <td>' . $row['vacancies'] . '</td>
+                        <td>' . $row['username'] . '</td>
+                        <td><input type="radio" name="check" value="' . $row['id'] . '"></td>
+                      </tr>';
             }
 
             echo '</table><br>';
@@ -129,6 +153,29 @@ $elements = array(
             <br><br>
             <label for="vacancies">Vacancies:</label> <input type="text" name="vacancies" id="vacancies"> <!--vacancies input-->
             <br><br>
+            <label for="member_id">Member:</label>
+            <select name="member_id" id="member_id">
+                <option value=""></option>
+                <?php
+
+                $sql = 'SELECT members.id, members.username
+                    FROM members
+                    WHERE members.type="owner"
+                    ORDER BY members.id ASC';
+                $query = $db->prepare($sql);
+                $check = $query->execute();
+
+                if ($check === false) {
+                    die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
+                }
+
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                    echo '<option value="' . $row['id'] . '">' . $row['username'] . '</option>';
+                }
+
+                ?>
+            </select> <!--member input-->
+            <br><br>
 
             <input type="submit" name="update" id="update" value="Update">
 
@@ -144,9 +191,9 @@ $elements = array(
             return '';
         }
 
-        $keysList = array('id'); //define list of columns to update as array
+        $keysList = array(); //define list of columns to update as array
 
-        $valuesList = array($_POST['check']); //define list of fields to update as array
+        $valuesList = array(); //define list of fields to update as array
 
         foreach ($_POST as $key => $value) {
             if ($key != 'update' && $key != 'check' and strlen($value) !== 0) { //ignore $_POST['update'] and $_POST['id'], check for empty string
@@ -157,10 +204,14 @@ $elements = array(
             }
         }
 
+        if ($keysList == array()) {
+            return '';
+        }
+
         $queryArray = array(); //define empty array
 
         for ($i = 0; $i <= count($keysList) - 1; ++$i) {
-            $queryArray[$i] = $keysList[$i] . "= '" . $valuesList[$i] . "'"; //merge both arrays into one
+            $queryArray[$i] = $keysList[$i] . " = '" . $valuesList[$i] . "' "; //merge both arrays into one
         }
 
         $query = implode(', ', $queryArray); //form mysql query code by imploding merged array with commas
@@ -206,27 +257,67 @@ $elements = array(
 
             <?php
 
-            echo '<table><tr><th>ID</th><th>Name</th><th>Owner</th><th>Location</th><th>Postcode</th><th>Vacancies</th></tr>';
+            echo '<table><tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Owner</th>
+                            <th>Location</th>
+                            <th>Postcode</th>
+                            <th>Vacancies</th>
+                            <th>Member</th>
+                         </tr>';
 
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                echo '<tr class="tableContents"><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . $row['owner'] . '</td><td>' . $row['location'] . '</td><td>' . $row['postcode'] . '</td><td>' . $row['vacancies'] . '</td><td><input type="radio" name="check" value="' . $row['id'] . '"></td></tr>';
+                echo '<tr class="tableContents">
+                        <td>' . $row['id'] . '</td>
+                        <td>' . $row['name'] . '</td>
+                        <td>' . $row['owner'] . '</td>
+                        <td>' . $row['location'] . '</td>
+                        <td>' . $row['postcode'] . '</td>
+                        <td>' . $row['vacancies'] . '</td>
+                        <td>' . $row['username'] . '</td>
+                        <td><input type="radio" name="check" value="' . $row['id'] . '"></td>
+                      </tr>';
             }
 
             echo '</table><br>';
 
             ?>
 
-            <p>Update fields:</p>
+            <h3>Update fields:</h3>
 
-            <label for="name">Name:</label> <input type="text" name="name" id="name"> <!--name input-->
+            <label for="name">Car Park Name:</label> <input type="text" name="name" id="name"> <!--name input-->
             <br><br>
-            <label for="owner">Owner:</label> <input type="text" name="owner" id="owner"> <!--owner input-->
+            <label for="owner">Owner Name:</label> <input type="text" name="owner" id="owner"> <!--owner input-->
             <br><br>
             <label for="location">Location:</label> <input type="text" name="location" id="location"> <!--location input-->
             <br><br>
             <label for="postcode">Postcode:</label> <input type="text" name="postcode" id="postcode"> <!--postcode input-->
             <br><br>
             <label for="vacancies">Vacancies:</label> <input type="text" name="vacancies" id="vacancies"> <!--vacancies input-->
+            <br><br>
+            <label for="member_id">Member:</label>
+            <select name="member_id" id="member_id">
+                <option value=""></option>
+                <?php
+
+                $sql = 'SELECT members.id, members.username
+                    FROM members
+                    WHERE members.type="owner"
+                    ORDER BY members.id ASC';
+                $query = $db->prepare($sql);
+                $check = $query->execute();
+
+                if ($check === false) {
+                    die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
+                }
+
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                    echo '<option value="' . $row['id'] . '">' . $row['username'] . '</option>';
+                }
+
+                ?>
+            </select> <!--member input-->
             <br><br>
 
             <input type="submit" name="update" id="update" value="Update">
@@ -243,9 +334,9 @@ $elements = array(
             return '';
         }
 
-        $keysList = array('id'); //define list of columns to update as array
+        $keysList = array(); //define list of columns to update as array
 
-        $valuesList = array($_POST['check']); //define list of fields to update as array
+        $valuesList = array(); //define list of fields to update as array
 
         foreach ($_POST as $key => $value) {
             if ($key != 'update' && $key != 'check' and strlen($value) !== 0) { //ignore $_POST['update'] and $_POST['id'], check for empty string
@@ -256,10 +347,14 @@ $elements = array(
             }
         }
 
+        if ($keysList == array()) {
+            return '';
+        }
+
         $queryArray = array(); //define empty array
 
         for ($i = 0; $i <= count($keysList) - 1; ++$i) {
-            $queryArray[$i] = $keysList[$i] . "= '" . $valuesList[$i] . "'"; //merge both arrays into one
+            $queryArray[$i] = $keysList[$i] . " = '" . $valuesList[$i] . "' "; //merge both arrays into one
         }
 
         $query = implode(', ', $queryArray); //form mysql query code by imploding merged array with commas

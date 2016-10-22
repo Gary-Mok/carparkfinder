@@ -99,14 +99,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
         <br><br>
         <label for="vacancies">Vacancies:</label> <input type="text" name="vacancies" id="vacancies"> <!--vacancies input-->
         <br><br>
-        <label for="member">User:</label>
-        <select name="member" id="member">
+        <label for="member">Member:</label> <select name="member" id="member">
             <option value=""></option>
             <?php
 
             $sql = 'SELECT members.id, members.username
                     FROM members
-                    WHERE type="owner"
+                    WHERE members.type="owner"
                     ORDER BY members.id ASC';
             $query = $db->prepare($sql);
             $check = $query->execute();
@@ -120,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create'])) {
             }
 
             ?>
-        </select> <!--user input-->
+        </select> <!--member input-->
         <span>* <?php echo $memberErr;?></span> <!--display error if empty-->
         <br><br>
         <input type="submit" name="create" value="Submit"> <!--create submit-->

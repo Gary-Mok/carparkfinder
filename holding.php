@@ -2,6 +2,10 @@
 
 <head>
     <link type='text/css' rel='stylesheet' href='/style/backend.css'/>
+
+    <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+    <script src="script.js"></script>
+
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <title>
@@ -59,7 +63,7 @@ if ($_SESSION['type'] !== "admin") {
 
     echo '<form method="post" id="request">';
 
-    echo '<strong>Select all</strong> <input type="checkbox" id="ckbCheckAll" name="all" value="">';
+    echo '<strong><label for="ckbCheckAll">Select all</label></strong> <input type="checkbox" id="ckbCheckAll" name="all" value="">';
 
     echo '<table><tr>
                     <th>ID</th>
@@ -94,11 +98,11 @@ if ($_SESSION['type'] !== "admin") {
 
     echo '</table><br/>';
 
-    echo '<input type="submit" name="request" id="requestButton" value="Accept">';
+    echo '<input type="submit" name="requestAccept" id="requestButton" value="Accept"> <input type="submit" name="requestReject" id="requestButton" value="Reject">';
 
     echo '</form>';
 
-    if (!isset($_POST['request'])) {
+    if (!isset($_POST['requestAccept']) || !isset($_POST['requestReject'])) {
         return '';
     }
 
@@ -119,17 +123,17 @@ if ($_SESSION['type'] !== "admin") {
         }
 
         if ($row['type'] = 'create') {
-            $sql = 'INSERT INTO car_parks (name, owner, location, postcode, vacancies)
-                    VALUES (:name, :owner, :location, :postcode, :vacancies)';
+            $sql = 'INSERT INTO car_parks (name, owner, location, postcode, vacancies, member_id)
+                    VALUES (:name, :owner, :location, :postcode, :vacancies, :id)';
             $query = $db->prepare($sql);
-            $check = $query->execute(['name' => $row['name'], 'owner' => $row['owner'], 'location' => $row['location'], 'postcode' => $row['postcode'], 'vacancies' => $row['vacancies']]);
+            $check = $query->execute(['name' => $row['name'], 'owner' => $row['owner'], 'location' => $row['location'], 'postcode' => $row['postcode'], 'vacancies' => $row['vacancies'], 'id' => $row['member_id']]);
 
             if ($check === false) {
                 die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
             }
 
             $sql = 'INSERT INTO transactions (member_id, transaction_type_id, credit, create_at)
-                    VALUES ( :id , :type_id , :payment , NOW() )';
+                    VALUES (:id , :type_id , :payment , NOW())';
             $query = $db->prepare($sql);
             $check = $query->execute(['id' => $row['member_id'], 'type_id' => $row['transaction_type_id'], 'payment' => $row['credit']]);
 
@@ -144,6 +148,16 @@ if ($_SESSION['type'] !== "admin") {
             if ($trans === false) {
                 die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
             }
+        }
+
+        if ($row['type'] = 'update') {
+
+            $keysList = array(); //define list of columns to update as array
+
+            $valuesList = array(); //define list of fields to update as array
+            
+            
+
         }
     }
 

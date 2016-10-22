@@ -27,7 +27,7 @@ if ($_SESSION['type'] == "visitor") {
 }
 
 $elements = array(
-    'id' => array(
+    'car_parks_period_id' => array(
         'description' => 'ID No.',
         'isRequired' => false,
         'type' => 'text',
@@ -56,6 +56,11 @@ $elements = array(
         'description' => 'Vacancies',
         'isRequired' => false,
         'type' => 'text',
+    ),
+    'member_id' => array(
+        'description' => 'Member',
+        'isRequired' => false,
+        'type' => 'select',
     ),
     'submit' => array(
         'description' => 'Submit',
@@ -94,7 +99,9 @@ $elements = array(
 
         <?php
 
-        $sql = 'SELECT * FROM car_parks';
+        $sql = 'SELECT car_parks.id, car_parks.name, car_parks.owner, car_parks.location, car_parks.postcode, car_parks.vacancies, members.username
+                FROM car_parks
+                INNER JOIN members ON car_parks.member_id = members.id';
         $query = $db->prepare($sql);
         $read = $query->execute();
 
@@ -109,6 +116,7 @@ $elements = array(
                         <th>Location</th>
                         <th>Postcode</th>
                         <th>Vacancies</th>
+                        <th>Member</th>
                      </tr>';
 
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -119,6 +127,7 @@ $elements = array(
                     <td>' . $row['location'] . '</td>
                     <td>' . $row['postcode'] . '</td>
                     <td>' . $row['vacancies'] . '</td>
+                    <td>' . $row['username'] . '</td>
                   </tr>';
             //database displayed in a table
         }
@@ -150,6 +159,7 @@ $elements = array(
                         <th>Location</th>
                         <th>Postcode</th>
                         <th>Vacancies</th>
+                        <th>Member</th>
                      </tr>';
 
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -160,6 +170,7 @@ $elements = array(
                     <td>' . $row['location'] . '</td>
                     <td>' . $row['postcode'] . '</td>
                     <td>' . $row['vacancies'] . '</td>
+                    <td>' . $row['username'] . '</td>
                   </tr>';
         }
 
