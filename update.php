@@ -196,7 +196,7 @@ $elements = array(
         $valuesList = array(); //define list of fields to update as array
 
         foreach ($_POST as $key => $value) {
-            if ($key != 'update' && $key != 'check' and strlen($value) !== 0) { //ignore $_POST['update'] and $_POST['id'], check for empty string
+            if ($key !== 'update' && $key !== 'check' && strlen($value) !== 0) { //ignore $_POST['update'] and $_POST['id'], check for empty string
 
                 array_push($keysList, $key);
 

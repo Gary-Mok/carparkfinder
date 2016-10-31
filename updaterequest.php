@@ -22,28 +22,33 @@ if ($_SESSION['type'] !== "owner") {
     exit();
 }
 
-$name = $owner = $location = $postcode = $vacancies = '';
+$emptyCheck = $name = $owner = $location = $postcode = $vacancies = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['updateRequest'])) {
 
     if (strlen($_POST['name']) !== 0) {
         $name = input($_POST['name']);
+        $emptyCheck = 'Not empty!';
     }
 
     if (strlen($_POST['owner']) !== 0) {
         $owner = input($_POST['owner']);
+        $emptyCheck = 'Not empty!';
     }
 
     if (strlen($_POST['location']) !== 0) {
         $location = input($_POST['location']);
+        $emptyCheck = 'Not empty!';
     }
 
     if (strlen($_POST['postcode']) !== 0) {
         $postcode = input($_POST['postcode']);
+        $emptyCheck = 'Not empty!';
     }
 
     if (strlen($_POST['vacancies']) !== 0) {
         $vacancies = input($_POST['vacancies']);
+        $emptyCheck = 'Not empty!';
     }
 }
 
@@ -130,6 +135,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['updateRequest'])) {
     }
 
     if (!isset($_POST['check'])) {
+        return '';
+    }
+    
+    if ($emptyCheck == '') {
         return '';
     }
 

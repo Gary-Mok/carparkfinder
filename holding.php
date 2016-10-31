@@ -102,7 +102,7 @@ if ($_SESSION['type'] !== "admin") {
 
     echo '</form>';
 
-    if (!isset($_POST['requestAccept']) || !isset($_POST['requestReject'])) {
+    if (!isset($_POST['requestAccept']) && !isset($_POST['requestReject'])) {
         return '';
     }
 
@@ -110,55 +110,116 @@ if ($_SESSION['type'] !== "admin") {
         return '';
     }
 
-    foreach ($_POST['list'] as $request_id) {
-        $sql = 'SELECT holding.id, holding.member_id, holding_type.type, holding.name, holding.owner, holding.location, holding.postcode, holding.vacancies, holding.credit, holding.transaction_type_id FROM holding
+    if (isset($_POST['requestAccept'])) {
+
+        foreach ($_POST['list'] as $request_id) {
+            $sql = 'SELECT holding.id, holding.member_id, holding_type.type, holding.name, holding.owner, holding.location, holding.postcode, holding.vacancies, holding.credit, holding.transaction_type_id, holding.update_id FROM holding
                 INNER JOIN holding_type ON holding.holding_type_id=holding_type.id
                 WHERE holding.id = ' . $request_id;
-        $query = $db->prepare($sql);
-        $trans = $query->execute();
-        $row = $query->fetch(PDO::FETCH_ASSOC);
-
-        if ($trans === false) {
-            die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
-        }
-
-        if ($row['type'] = 'create') {
-            $sql = 'INSERT INTO car_parks (name, owner, location, postcode, vacancies, member_id)
-                    VALUES (:name, :owner, :location, :postcode, :vacancies, :id)';
             $query = $db->prepare($sql);
-            $check = $query->execute(['name' => $row['name'], 'owner' => $row['owner'], 'location' => $row['location'], 'postcode' => $row['postcode'], 'vacancies' => $row['vacancies'], 'id' => $row['member_id']]);
-
-            if ($check === false) {
-                die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
-            }
-
-            $sql = 'INSERT INTO transactions (member_id, transaction_type_id, credit, create_at)
-                    VALUES (:id , :type_id , :payment , NOW())';
-            $query = $db->prepare($sql);
-            $check = $query->execute(['id' => $row['member_id'], 'type_id' => $row['transaction_type_id'], 'payment' => $row['credit']]);
-
-            if (false === $check) {
-                die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
-            }
-
-            $sql = 'DELETE FROM holding WHERE id = :id';
-            $query = $db->prepare($sql);
-            $check = $query->execute(['id' => $row['id']]);
+            $trans = $query->execute();
+            $row = $query->fetch(PDO::FETCH_ASSOC);
 
             if ($trans === false) {
                 die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
             }
+
+            if ($row['type'] == 'create') {
+
+                $sql = 'INSERT INTO car_parks (name, owner, location, postcode, vacancies, member_id)
+                    VALUES (:name, :owner, :location, :postcode, :vacancies, :id)';
+                $query = $db->prepare($sql);
+                $check = $query->execute(['name' => $row['name'], 'owner' => $row['owner'], 'location' => $row['location'], 'postcode' => $row['postcode'], 'vacancies' => $row['vacancies'], 'id' => $row['member_id']]);
+
+                if ($check === false) {
+                    die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
+                }
+
+                $sql = 'INSERT INTO transactions (member_id, transaction_type_id, credit, create_at)
+                    VALUES (:id , :type_id , :payment , NOW())';
+                $query = $db->prepare($sql);
+                $check = $query->execute(['id' => $row['member_id'], 'type_id' => $row['transaction_type_id'], 'payment' => $row['credit']]);
+
+                if (false === $check) {
+                    die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
+                }
+
+                $sql = 'DELETE FROM holding WHERE id = :id';
+                $query = $db->prepare($sql);
+                $check = $query->execute(['id' => $row['id']]);
+
+                if ($trans === false) {
+                    die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
+                }
+            }
+
+            if ($row['type'] == 'update') {
+
+                $keysList = array(); //define list of columns to update as array
+
+                $valuesList = array(); //define list of fields to update as array
+
+                foreach ($row as $key => $value) {
+                    if ($key !== 'id' &&
+                        $key !== 'member_id' &&
+                        $key !== 'type' &&
+                        $key !== 'credit' &&
+                        $key !== 'transaction_type_id' &&
+                        $key !== 'update_id' &&
+                        $value !== '0' &&
+                        strlen($value) !== 0
+                    ) {
+
+                        array_push($keysList, $key);
+
+                        array_push($valuesList, $value);
+                    }
+                }
+
+                $queryArray = array(); //define empty array
+
+                for ($i = 0; $i <= count($keysList) - 1; ++$i) {
+                    $queryArray[$i] = $keysList[$i] . " = '" . $valuesList[$i] . "' "; //merge both arrays into one
+                }
+
+                $query = implode(', ', $queryArray); //form mysql query code by imploding merged array with commas
+
+                $sqlUpdate = 'UPDATE car_parks SET ' . $query . 'WHERE id= :id';
+                $queryUpdate = $db->prepare($sqlUpdate);
+                $update = $queryUpdate->execute(['id' => $row['update_id']]);
+
+                if ($update === false) {
+                    echo 'Error: ' . $sqlUpdate . '<br>';
+                    var_dump($db->errorInfo()); //error message if request fails
+                    return;
+                }
+
+                $sql = 'DELETE FROM holding WHERE id = :id';
+                $query = $db->prepare($sql);
+                $check = $query->execute(['id' => $row['id']]);
+
+                if ($trans === false) {
+                    die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
+                }
+
+            }
+
         }
 
-        if ($row['type'] = 'update') {
+    } elseif (isset($_POST['requestReject'])) {
 
-            $keysList = array(); //define list of columns to update as array
+        foreach ($_POST['list'] as $request_id) {
 
-            $valuesList = array(); //define list of fields to update as array
-            
-            
+            $sql = 'DELETE FROM holding WHERE id = :id';
+            $query = $db->prepare($sql);
+            $check = $query->execute(['id' => $request_id]);
+
+            if ($trans === false) {
+                die('There was an error running the query [' . $db->errorInfo() . ']'); //error message if query fails
+            }
 
         }
+
     }
 
     ?>
